@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Application</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Clean Navigation Bar -->
+    <nav class="top-nav" id="topNav" style="display: none;" aria-label="Primary Navigation">
+      <div class="nav-brand">
+        <span class="avatar-circle" id="navAvatar">P</span>
+        <span class="nav-title" id="navTitle">Welcome, Prince</span>
+      </div>
+
+      <div class="nav-links">
+        <button type="button" class="nav-btn active" id="navQuizBtn">Quiz</button>
+        <button type="button" class="nav-btn" id="navAccountBtn">Account</button>
+        <button type="button" class="nav-btn" id="navSfxBtn">SFX: ON</button>
+        <button type="button" class="nav-btn" id="navVoiceBtn">Voice: ON</button>
+      </div>
+    </nav>
+
+    <!-- Step 1: Onboarding Flow (Language + Terms & Conditions) -->
+    <section class="card" id="onboardingScreen">
+      <h1 class="screen-heading" id="onboardHeading">Quiz Setup</h1>
+      <p class="screen-subtext" id="onboardSubtext">Choose your language and accept the terms to continue.</p>
+
+      <div class="field">
+        <label for="onboardLangSelect" id="langLabel">Language</label>
+        <select id="onboardLangSelect">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+          <option value="tw">Twi</option>
+        </select>
+      </div>
+
+      <label class="terms-row" for="termsCheck">
+        <input type="checkbox" id="termsCheck" />
+        <span id="termsText">I agree to the Terms and Conditions for using this quiz application.</span>
+      </label>
+
+      <button type="button" class="primary-btn full-btn" id="toSignupBtn" disabled>Next</button>
+    </section>
+
+    <!-- Step 2: Sign-Up / Registration Flow -->
+    <section class="card" id="signupScreen" style="display: none;">
+      <h2 class="screen-heading" id="signupHeading">Create Account</h2>
+      <p class="screen-subtext" id="signupSubtext">Enter your details to personalize your quiz experience.</p>
+
+      <form id="signupForm" class="form-stack">
+        <div class="field">
+          <label for="signupName" id="nameLabel">Name</label>
+          <input type="text" id="signupName" required />
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <label for="signupAge" id="ageLabel">Age</label>
+            <input type="number" id="signupAge" min="5" max="120" required />
+          </div>
+
+          <div class="field">
+            <label for="signupMethod" id="methodLabel">Sign-In Method</label>
+            <select id="signupMethod">
+              <option value="Email">Email</option>
+              <option value="Apple">Apple</option>
+              <option value="Google">Google</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="signupVoice" id="voiceLabel">Account Voice</label>
+          <select id="signupVoice">
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <span class="field-label" id="avatarLabel">Profile Picture</span>
+          <div class="avatar-controls">
+            <button type="button" class="choice-btn active" id="useLetterBtn">First Letter</button>
+            <label class="choice-btn file-btn" for="avatarUpload">
+              <span id="uploadPhotoLabel">Upload Photo</span>
+              <input type="file" id="avatarUpload" accept="image/*" hidden />
+            </label>
+          </div>
+          <div class="avatar-preview-box">
+            <span class="avatar-circle large" id="signupAvatarPreview">A</span>
+            <span class="preview-caption" id="avatarMethodCaption">First letter avatar</span>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="secondary-btn" id="backToOnboardBtn">Back</button>
+          <button type="submit" class="primary-btn" id="completeSignupBtn">Finish Sign Up</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Account Details View (Accessed via Navigation Bar) -->
+    <section class="card" id="accountScreen" style="display: none;">
+      <h2 class="screen-heading" id="accountHeading">Account Details</h2>
+
+      <div class="account-summary">
+        <span class="avatar-circle large" id="accountAvatarView">P</span>
+        <div class="account-lines">
+          <p><strong id="accNameOut"></strong></p>
+          <p id="accAgeOut"></p>
+          <p id="accMethodOut"></p>
+          <p id="accLangOut"></p>
+          <p id="accVoiceOut"></p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="accountLangSelect" id="accLangLabel">Change Language</label>
+        <select id="accountLangSelect">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+          <option value="tw">Twi</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="accountVoiceSelect" id="accVoiceLabel">Account Voice</label>
+        <select id="accountVoiceSelect">
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+        </select>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="secondary-btn" id="reEditProfileBtn">Edit Profile</button>
+        <button type="button" class="primary-btn" id="backToQuizFromAccBtn">Back to Quiz</button>
+      </div>
+    </section>
+
+    <!-- Quiz Configuration Screen -->
+    <section class="card config-container" id="configScreen" style="display: none;">
+      <h2 class="config-title" id="cfgTitle">Quiz Configuration</h2>
+
+      <div class="config-option">
+        <h4 class="option-title" id="cfgCategoryLabel">Select Category</h4>
+        <div class="category-options">
+          <button type="button" class="category-option active" data-cat="Programming" id="catProg">Programming</button>
+          <button type="button" class="category-option" data-cat="Geography" id="catGeo">Geography</button>
+          <button type="button" class="category-option" data-cat="Mathematics" id="catMath">Mathematics</button>
+          <button type="button" class="category-option" data-cat="Entertainment" id="catEnt">Entertainment</button>
+        </div>
+      </div>
+
+      <div class="config-option">
+        <h4 class="option-title" id="cfgCountLabel">No. of Questions</h4>
+        <div class="question-options">
+          <button type="button" class="question-option" data-count="5">5</button>
+          <button type="button" class="question-option active" data-count="10">10</button>
+          <button type="button" class="question-option" data-count="15">15</button>
+          <button type="button" class="question-option" data-count="20">20</button>
+          <button type="button" class="question-option" data-count="25">25</button>
+        </div>
+      </div>
+
+      <p class="rule-note" id="ruleNoteText"></p>
+
+      <button type="button" class="primary-btn full-btn" id="startQuizBtn">Start Quiz</button>
+    </section>
+
+    <!-- Active Quiz Screen -->
+    <section class="card quiz-container" id="quizScreen" style="display: none;">
+      <header class="quiz-header">
+        <div>
+          <h2 class="quiz-title" id="quizHeaderTitle">Quiz Application</h2>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+        <div class="quiz-timer" id="timerBox">
+          <span class="time-duration" id="timerText">15s</span>
+        </div>
+      </header>
+
+      <div class="quiz-content">
+        <div class="meta-strip">
+          <span id="scoreStat"></span>
+          <span id="mistakesStat"></span>
+        </div>
+        <h1 class="question-text" id="questionText"></h1>
+        <ul class="answer-options" id="answerOptions"></ul>
+        <p class="explanation-text" id="explanationText" style="display: none;"></p>
+      </div>
+
+      <footer class="quiz-footer">
+        <p class="question-status" id="questionStatus"></p>
+        <button type="button" class="primary-btn next-btn" id="nextQuestionBtn">Next</button>
+      </footer>
+    </section>
+
+    <!-- Result Screen (Reward or Meme Punishment) -->
+    <section class="card result-container" id="resultScreen" style="display: none;">
+      <div id="rewardView" style="display: none;">
+        <div class="reward-mark impact-text" id="rewardBadge">REWARD</div>
+        <h2 class="result-title" id="rewardTitle"></h2>
+        <p class="result-message" id="rewardMsg"></p>
+      </div>
+
+      <div id="punishmentView" style="display: none;">
+        <canvas id="memeCanvas" width="440" height="240" class="meme-canvas"></canvas>
+        <h2 class="result-title impact-text" id="punishmentTitle"></h2>
+        <p class="result-message" id="punishmentJoke"></p>
+        <div class="advice-box" id="improvementBox"></div>
+      </div>
+
+      <div class="btn-row center-row">
+        <button type="button" class="primary-btn" id="tryAgainBtn">Try Again</button>
+        <button type="button" class="secondary-btn" id="retryMissedBtn" style="display: none;">Retry Missed</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
