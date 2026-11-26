@@ -6,8 +6,28 @@
   const TEXT = {
     en: {
       welcomeNav: (name) => `Welcome, ${name}`,
-      quizNav: "Quiz",
+      quizNav: "Home",
       accountNav: "Account",
+      settingsNav: "Settings",
+      settingsHeading: "Settings",
+      settingsSubtext: "Choose your language, voice, and sound preferences.",
+      settingsExperience: "Experience",
+      settingsData: "Your data",
+      settingsDataNote: "This prototype stores your profile in this browser. Sign-in and cloud sync are not connected.",
+      resumeTitle: "Paused quiz",
+      resumeSummary: (category, count, question) => `${category} · ${count} questions · Question ${question} of ${count}`,
+      resumeBtn: "Resume quiz",
+      discardBtn: "Discard",
+      reviewBtn: "Review answers",
+      hideReviewBtn: "Hide review",
+      reviewHeading: "Your answers",
+      reviewStatusCorrect: "Correct",
+      reviewStatusMissed: "Needs review",
+      reviewYourAnswer: "Your answer",
+      reviewCorrectAnswer: "Correct answer",
+      reviewNoAnswer: "No answer submitted",
+      reviewTimedOut: "Time ran out",
+      reviewExplanation: "Why",
       sfxOn: "SFX: ON",
       sfxOff: "SFX: OFF",
       voiceOn: "Voice: ON",
@@ -20,6 +40,9 @@
       signupHeading: "Create Account",
       signupSubtext: "Set up your profile details to begin.",
       nameLabel: "Name",
+      emailLabel: "Email address",
+      emailHint: "This prototype keeps your profile on this device. Email sign-in is not connected yet.",
+      methodHint: (method) => method === "Guest" ? "A guest profile is saved only in this browser." : method === "Email" ? "This is a local profile; password and email verification are not enabled." : `${method} sign-in needs provider setup and is shown as a preview.`,
       ageLabel: "Age",
       methodLabel: "Sign-In Method",
       voiceLabel: "Account Voice",
@@ -36,6 +59,7 @@
       accName: (v) => `Name: ${v}`,
       accAge: (v) => `Age: ${v}`,
       accMethod: (v) => `Sign-In: ${v}`,
+      accEmail: (v) => v ? `Email: ${v}` : "No email on this guest profile",
       accLang: (v) => `Language: ${v}`,
       accVoice: (v) => `Voice: ${v}`,
       accLangLabel: "Change Language",
@@ -77,8 +101,28 @@
     },
     fr: {
       welcomeNav: (name) => `Bienvenue, ${name}`,
-      quizNav: "Quiz",
+      quizNav: "Accueil",
       accountNav: "Compte",
+      settingsNav: "Réglages",
+      settingsHeading: "Réglages",
+      settingsSubtext: "Choisissez la langue, la voix et les sons.",
+      settingsExperience: "Préférences",
+      settingsData: "Vos données",
+      settingsDataNote: "Cette version conserve le profil dans ce navigateur. La connexion et la synchronisation ne sont pas activées.",
+      resumeTitle: "Quiz en pause",
+      resumeSummary: (category, count, question) => `${category} · ${count} questions · Question ${question} sur ${count}`,
+      resumeBtn: "Reprendre",
+      discardBtn: "Abandonner",
+      reviewBtn: "Revoir les réponses",
+      hideReviewBtn: "Masquer la correction",
+      reviewHeading: "Vos réponses",
+      reviewStatusCorrect: "Correct",
+      reviewStatusMissed: "À revoir",
+      reviewYourAnswer: "Votre réponse",
+      reviewCorrectAnswer: "Bonne réponse",
+      reviewNoAnswer: "Aucune réponse envoyée",
+      reviewTimedOut: "Temps écoulé",
+      reviewExplanation: "Explication",
       sfxOn: "SFX : ACTIF",
       sfxOff: "SFX : INACTIF",
       voiceOn: "Voix : ACTIVE",
@@ -91,6 +135,9 @@
       signupHeading: "Créer un Compte",
       signupSubtext: "Renseignez vos informations pour personnaliser votre profil.",
       nameLabel: "Nom",
+      emailLabel: "Adresse e-mail",
+      emailHint: "Cette version conserve le profil sur cet appareil. La connexion par e-mail n'est pas activée.",
+      methodHint: (method) => method === "Guest" ? "Le profil invité est enregistré dans ce navigateur." : method === "Email" ? "Profil local : mot de passe et vérification ne sont pas activés." : `La connexion ${method} nécessite une configuration du fournisseur.`,
       ageLabel: "Âge",
       methodLabel: "Méthode de Connexion",
       voiceLabel: "Voix du Compte",
@@ -107,6 +154,7 @@
       accName: (v) => `Nom : ${v}`,
       accAge: (v) => `Âge : ${v}`,
       accMethod: (v) => `Connexion : ${v}`,
+      accEmail: (v) => v ? `E-mail : ${v}` : "Aucun e-mail sur ce profil invité",
       accLang: (v) => `Langue : ${v}`,
       accVoice: (v) => `Voix : ${v}`,
       accLangLabel: "Changer de Langue",
@@ -148,8 +196,28 @@
     },
     es: {
       welcomeNav: (name) => `Bienvenido, ${name}`,
-      quizNav: "Quiz",
+      quizNav: "Inicio",
       accountNav: "Cuenta",
+      settingsNav: "Ajustes",
+      settingsHeading: "Ajustes",
+      settingsSubtext: "Elige el idioma, la voz y los sonidos.",
+      settingsExperience: "Preferencias",
+      settingsData: "Tus datos",
+      settingsDataNote: "Esta versión guarda el perfil en este navegador. El acceso y la sincronización en la nube no están conectados.",
+      resumeTitle: "Quiz en pausa",
+      resumeSummary: (category, count, question) => `${category} · ${count} preguntas · Pregunta ${question} de ${count}`,
+      resumeBtn: "Reanudar quiz",
+      discardBtn: "Descartar",
+      reviewBtn: "Revisar respuestas",
+      hideReviewBtn: "Ocultar revisión",
+      reviewHeading: "Tus respuestas",
+      reviewStatusCorrect: "Correcta",
+      reviewStatusMissed: "Para repasar",
+      reviewYourAnswer: "Tu respuesta",
+      reviewCorrectAnswer: "Respuesta correcta",
+      reviewNoAnswer: "Sin respuesta",
+      reviewTimedOut: "Se acabó el tiempo",
+      reviewExplanation: "Explicación",
       sfxOn: "SFX: ON",
       sfxOff: "SFX: OFF",
       voiceOn: "Voz: ON",
@@ -162,6 +230,9 @@
       signupHeading: "Crear Cuenta",
       signupSubtext: "Completa tus datos para configurar tu perfil.",
       nameLabel: "Nombre",
+      emailLabel: "Correo electrónico",
+      emailHint: "Esta versión guarda el perfil en este dispositivo. El acceso por correo aún no está conectado.",
+      methodHint: (method) => method === "Guest" ? "El perfil de invitado se guarda solo en este navegador." : method === "Email" ? "Perfil local; no hay contraseña ni verificación de correo." : `El acceso con ${method} necesita configurar el proveedor.`,
       ageLabel: "Edad",
       methodLabel: "Método de Acceso",
       voiceLabel: "Voz de Cuenta",
@@ -178,6 +249,7 @@
       accName: (v) => `Nombre: ${v}`,
       accAge: (v) => `Edad: ${v}`,
       accMethod: (v) => `Acceso: ${v}`,
+      accEmail: (v) => v ? `Correo: ${v}` : "Este perfil de invitado no tiene correo",
       accLang: (v) => `Idioma: ${v}`,
       accVoice: (v) => `Voz: ${v}`,
       accLangLabel: "Cambiar Idioma",
@@ -219,8 +291,28 @@
     },
     tw: {
       welcomeNav: (name) => `Akwaaba, ${name}`,
-      quizNav: "Quiz",
+      quizNav: "Fie",
       accountNav: "Akaunti",
+      settingsNav: "Nhyehyɛe",
+      settingsHeading: "Nhyehyɛe",
+      settingsSubtext: "Paw kasa, nne ne nnyɛe a wopɛ.",
+      settingsExperience: "Wo pɛde",
+      settingsData: "Wo data",
+      settingsDataNote: "Saa prototype yi sie profile wɔ browser yi mu. Sign-in ne cloud sync nni hɔ.",
+      resumeTitle: "Quiz a agyae",
+      resumeSummary: (category, count, question) => `${category} · nsɛmmisa ${count} · Asɛmmisa ${question} wɔ ${count} mu`,
+      resumeBtn: "San toa so",
+      discardBtn: "Pepa",
+      reviewBtn: "Hwɛ mmuae",
+      hideReviewBtn: "Fa review no sie",
+      reviewHeading: "Wo mmuae",
+      reviewStatusCorrect: "Ɛyɛ nokware",
+      reviewStatusMissed: "San hwɛ eyi",
+      reviewYourAnswer: "Wo mmuae",
+      reviewCorrectAnswer: "Mmuae a ɛyɛ nokware",
+      reviewNoAnswer: "Wommuae",
+      reviewTimedOut: "Bere no asa",
+      reviewExplanation: "Nkyerɛmu",
       sfxOn: "Nnyɛe: WƆ SO",
       sfxOff: "Nnyɛe: ADUM",
       voiceOn: "Nne: WƆ SO",
@@ -233,6 +325,9 @@
       signupHeading: "Bɔ Akaunti",
       signupSubtext: "Hyɛ wo nsɛm ma yɛnsiesie wo profile.",
       nameLabel: "Din",
+      emailLabel: "Email",
+      emailHint: "Saa bere yi sie wo profile wɔ mfiri yi so. Email login nni hɔ seesei.",
+      methodHint: (method) => method === "Guest" ? "Wɔde guest profile no sie browser yi mu." : method === "Email" ? "Ɛyɛ local profile; password ne email verification nni hɔ." : `Ɛsɛ sɛ wɔhyehyɛ ${method} login provider no ansa.`,
       ageLabel: "Mfe",
       methodLabel: "Kwan a Wode Wura Mu",
       voiceLabel: "Akaunti Nne",
@@ -249,6 +344,7 @@
       accName: (v) => `Din: ${v}`,
       accAge: (v) => `Mfe: ${v}`,
       accMethod: (v) => `Kwan: ${v}`,
+      accEmail: (v) => v ? `Email: ${v}` : "Guest profile yi nni email",
       accLang: (v) => `Kasa: ${v}`,
       accVoice: (v) => `Nne: ${v}`,
       accLangLabel: "Sesa Kasa",
@@ -292,10 +388,12 @@
 
   // Elements
   const topNav = document.getElementById("topNav");
+  const appHeader = document.getElementById("appHeader");
   const navAvatar = document.getElementById("navAvatar");
   const navTitle = document.getElementById("navTitle");
   const navQuizBtn = document.getElementById("navQuizBtn");
   const navAccountBtn = document.getElementById("navAccountBtn");
+  const navSettingsBtn = document.getElementById("navSettingsBtn");
   const navSfxBtn = document.getElementById("navSfxBtn");
   const navVoiceBtn = document.getElementById("navVoiceBtn");
 
@@ -303,8 +401,15 @@
   const configScreen = document.getElementById("configScreen");
   const signupScreen = document.getElementById("signupScreen");
   const accountScreen = document.getElementById("accountScreen");
+  const settingsScreen = document.getElementById("settingsScreen");
   const quizScreen = document.getElementById("quizScreen");
   const resultScreen = document.getElementById("resultScreen");
+  const resumePanel = document.getElementById("resumePanel");
+  const resumeQuizBtn = document.getElementById("resumeQuizBtn");
+  const discardResumeBtn = document.getElementById("discardResumeBtn");
+  const reviewPanel = document.getElementById("reviewPanel");
+  const reviewList = document.getElementById("reviewList");
+  const toggleReviewBtn = document.getElementById("toggleReviewBtn");
 
   const onboardLangSelect = document.getElementById("onboardLangSelect");
   const termsCheck = document.getElementById("termsCheck");
@@ -312,6 +417,8 @@
 
   const signupForm = document.getElementById("signupForm");
   const signupName = document.getElementById("signupName");
+  const signupEmail = document.getElementById("signupEmail");
+  const signupEmailField = document.getElementById("signupEmailField");
   const signupAge = document.getElementById("signupAge");
   const signupMethod = document.getElementById("signupMethod");
   const signupVoice = document.getElementById("signupVoice");
@@ -358,11 +465,17 @@
   let mistakes = 0;
   let timeLeft = TIME_PER_QUESTION;
   let timerId = null;
+  let answered = false;
+  let pickedAnswer = null;
+  let answers = [];
+  let savedAttempt = null;
+  let feedbackText = "";
+  const ATTEMPT_KEY = "quiz_app_attempt_v1";
 
   function loadUser() {
     try {
       const raw = localStorage.getItem(PROFILE_KEY);
-      if (raw) return JSON.parse(raw);
+      if (raw) return { ...{ completedOnboarding: false, registered: false, createdAt: Date.now(), sessions: 0, language: "en", name: "", email: "", age: "", method: "Email", voice: "female", avatarType: "letter", avatarPhoto: "", sfx: true, voiceEnabled: true }, ...JSON.parse(raw) };
     } catch (_) {}
     return {
       completedOnboarding: false,
@@ -385,6 +498,129 @@
     try {
       localStorage.setItem(PROFILE_KEY, JSON.stringify(user));
     } catch (_) {}
+  }
+
+  function loadAttempt() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(ATTEMPT_KEY) || "null");
+      if (!saved || !Array.isArray(saved.questions) || !saved.questions.length || !saved.currentQ) return null;
+      return saved;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function clearSavedAttempt() {
+    try { localStorage.removeItem(ATTEMPT_KEY); } catch (_) {}
+    savedAttempt = null;
+    renderResumePanel();
+  }
+
+  function saveAttempt() {
+    if (!questions.length || !currentQ) return;
+    savedAttempt = {
+      version: 1,
+      category: selectedCategory,
+      selectedCount,
+      questions,
+      missedList,
+      qIndex,
+      currentQ,
+      score,
+      mistakes,
+      timeLeft,
+      answered,
+      pickedAnswer,
+      answers,
+      feedbackText,
+      savedAt: Date.now()
+    };
+    try { localStorage.setItem(ATTEMPT_KEY, JSON.stringify(savedAttempt)); } catch (_) {}
+    renderResumePanel();
+  }
+
+  function renderResumePanel() {
+    const tr = t();
+    document.getElementById("resumeTitle").textContent = tr.resumeTitle;
+    resumeQuizBtn.textContent = tr.resumeBtn;
+    discardResumeBtn.textContent = tr.discardBtn;
+    if (!savedAttempt) {
+      resumePanel.hidden = true;
+      return;
+    }
+    const category = tr.categories[savedAttempt.category] || savedAttempt.category;
+    const count = savedAttempt.questions.length;
+    const question = Math.min(savedAttempt.qIndex || 1, count);
+    document.getElementById("resumeSummary").textContent = tr.resumeSummary(category, count, question);
+    resumePanel.hidden = false;
+  }
+
+  function renderAnswerReview() {
+    const tr = t();
+    document.getElementById("reviewHeading").textContent = tr.reviewHeading;
+    reviewList.replaceChildren();
+    questions.forEach((question, index) => {
+      const response = answers[index] || null;
+      const isCorrect = Boolean(response && response.isCorrect);
+      const card = document.createElement("article");
+      card.className = `review-item ${isCorrect ? "is-correct" : "is-incorrect"}`;
+
+      const head = document.createElement("div");
+      head.className = "review-item-head";
+      const number = document.createElement("h4");
+      number.textContent = `${index + 1}. ${question.question}`;
+      const status = document.createElement("span");
+      status.className = "review-status";
+      status.textContent = isCorrect ? tr.reviewStatusCorrect : tr.reviewStatusMissed;
+      head.append(number, status);
+
+      const yourAnswer = document.createElement("p");
+      const chosen = response && Number.isInteger(response.selectedIndex)
+        ? question.options[response.selectedIndex]
+        : tr.reviewNoAnswer;
+      yourAnswer.textContent = `${tr.reviewYourAnswer}: ${response && response.timedOut ? tr.reviewTimedOut : chosen}`;
+
+      const correctAnswer = document.createElement("p");
+      correctAnswer.textContent = `${tr.reviewCorrectAnswer}: ${question.options[question.correctAnswer]}`;
+
+      const explanation = document.createElement("p");
+      explanation.className = "review-explanation";
+      explanation.textContent = `${tr.reviewExplanation}: ${question.explanation}`;
+
+      card.append(head, yourAnswer, correctAnswer, explanation);
+      reviewList.appendChild(card);
+    });
+  }
+
+  function resumeSavedAttempt() {
+    const attempt = savedAttempt;
+    if (!attempt) return;
+    stopTimer();
+    selectedCategory = attempt.category || "Programming";
+    selectedCount = attempt.selectedCount || attempt.questions.length;
+    questions = attempt.questions;
+    missedList = Array.isArray(attempt.missedList) ? attempt.missedList : [];
+    qIndex = Math.max(1, Math.min(attempt.qIndex || 1, questions.length));
+    currentQ = attempt.currentQ || questions[qIndex - 1];
+    score = Number(attempt.score) || 0;
+    mistakes = Number(attempt.mistakes) || 0;
+    timeLeft = Math.max(1, Math.min(TIME_PER_QUESTION, Number(attempt.timeLeft) || TIME_PER_QUESTION));
+    answered = Boolean(attempt.answered);
+    pickedAnswer = Number.isInteger(attempt.pickedAnswer) ? attempt.pickedAnswer : null;
+    answers = Array.isArray(attempt.answers) ? attempt.answers : [];
+    feedbackText = attempt.feedbackText || "";
+    document.querySelectorAll(".category-option").forEach((button) => {
+      const selected = button.dataset.cat === selectedCategory;
+      button.classList.toggle("active", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    document.querySelectorAll(".question-option").forEach((button) => {
+      const selected = Number(button.dataset.count) === selectedCount;
+      button.classList.toggle("active", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    showOnly(quizScreen);
+    renderCurrentQuestion();
   }
 
   // Silent background adaptation tracker (2-6 months)
@@ -471,7 +707,10 @@
 
   function applyAvatar(el, nameStr, type, photoData) {
     if (type === "photo" && photoData) {
-      el.innerHTML = `<img src="${photoData}" alt="" />`;
+      const image = document.createElement("img");
+      image.src = photoData;
+      image.alt = "";
+      el.replaceChildren(image);
       return;
     }
     const ch = ((nameStr || "A").trim().charAt(0) || "A").toUpperCase();
@@ -491,8 +730,14 @@
     accountVoiceSelect.value = user.voice || "female";
 
     navTitle.textContent = tr.welcomeNav(user.name || "User");
-    navQuizBtn.textContent = tr.quizNav;
-    navAccountBtn.textContent = tr.accountNav;
+    document.getElementById("navHomeLabel").textContent = tr.quizNav;
+    document.getElementById("navAccountLabel").textContent = tr.accountNav;
+    document.getElementById("navSettingsLabel").textContent = tr.settingsNav;
+    document.getElementById("settingsHeading").textContent = tr.settingsHeading;
+    document.getElementById("settingsSubtext").textContent = tr.settingsSubtext;
+    document.getElementById("settingsExperienceHeading").textContent = tr.settingsExperience;
+    document.getElementById("settingsDataHeading").textContent = tr.settingsData;
+    document.getElementById("settingsDataNote").textContent = tr.settingsDataNote;
     navSfxBtn.textContent = user.sfx ? tr.sfxOn : tr.sfxOff;
     navVoiceBtn.textContent = user.voiceEnabled ? tr.voiceOn : tr.voiceOff;
     navSfxBtn.classList.toggle("muted", !user.sfx);
@@ -507,6 +752,9 @@
     document.getElementById("signupHeading").textContent = tr.signupHeading;
     document.getElementById("signupSubtext").textContent = tr.signupSubtext;
     document.getElementById("nameLabel").textContent = tr.nameLabel;
+    document.getElementById("emailLabel").textContent = tr.emailLabel;
+    document.getElementById("emailHint").textContent = tr.emailHint;
+    document.getElementById("methodHint").textContent = tr.methodHint(signupMethod.value);
     document.getElementById("ageLabel").textContent = tr.ageLabel;
     document.getElementById("methodLabel").textContent = tr.methodLabel;
     document.getElementById("voiceLabel").textContent = tr.voiceLabel;
@@ -525,6 +773,7 @@
     document.getElementById("accNameOut").textContent = tr.accName(user.name || "");
     document.getElementById("accAgeOut").textContent = tr.accAge(user.age || "");
     document.getElementById("accMethodOut").textContent = tr.accMethod(user.method || "Email");
+    document.getElementById("accEmailOut").textContent = tr.accEmail(user.email || "");
     document.getElementById("accLangOut").textContent = tr.accLang(accountLangSelect.options[accountLangSelect.selectedIndex].text);
     document.getElementById("accVoiceOut").textContent = tr.accVoice(user.voice === "male" ? tr.male : tr.female);
     document.getElementById("accLangLabel").textContent = tr.accLangLabel;
@@ -546,6 +795,8 @@
     nextQuestionBtn.textContent = tr.nextBtn;
     tryAgainBtn.textContent = tr.tryAgainBtn;
     retryMissedBtn.textContent = tr.retryMissedBtn;
+    document.getElementById("toggleReviewBtn").textContent = reviewPanel.style.display === "block" ? tr.hideReviewBtn : tr.reviewBtn;
+    renderResumePanel();
 
     applyAvatar(navAvatar, user.name, user.avatarType, user.avatarPhoto);
     applyAvatar(accountAvatarView, user.name, user.avatarType, user.avatarPhoto);
@@ -560,12 +811,17 @@
   }
 
   function showOnly(target) {
-    [onboardingScreen, signupScreen, configScreen, accountScreen, quizScreen, resultScreen].forEach((sec) => {
+    [onboardingScreen, signupScreen, configScreen, accountScreen, settingsScreen, quizScreen, resultScreen].forEach((sec) => {
       sec.style.display = sec === target ? "block" : "none";
     });
     topNav.style.display = user.registered ? "flex" : "none";
+    appHeader.style.display = user.registered ? "flex" : "none";
     navQuizBtn.classList.toggle("active", target === configScreen || target === quizScreen || target === resultScreen);
     navAccountBtn.classList.toggle("active", target === accountScreen);
+    navSettingsBtn.classList.toggle("active", target === settingsScreen);
+    navQuizBtn.setAttribute("aria-current", target === configScreen || target === quizScreen || target === resultScreen ? "page" : "false");
+    navAccountBtn.setAttribute("aria-current", target === accountScreen ? "page" : "false");
+    navSettingsBtn.setAttribute("aria-current", target === settingsScreen ? "page" : "false");
   }
 
   // Question Generator (Dynamic, no static limit)
@@ -615,41 +871,121 @@
       return makeItem("Algebra", `Solve for x: 2x + 4 = ${rhs}`, x, [x + 1, Math.max(1, x - 1), x + 2], `2x = ${rhs - 4}, so x = ${x}.`);
     }
 
-    const pools = {
+    if (!genQuestion.pools) genQuestion.pools = {
       programming: [
         ["Arrays", "Which method adds an item to the end of a JavaScript array?", "push()", ["pop()", "shift()", "slice()"], "push() adds elements to the end."],
         ["HTML", "Which HTML tag creates a hyperlink?", "<a>", ["<link>", "<href>", "<url>"], "<a> defines a link."],
         ["CSS", "Which CSS property adds space inside a border?", "padding", ["margin", "gap", "float"], "padding is inside the border."],
         ["Databases", "What does SQL stand for?", "Structured Query Language", ["Simple Query List", "Standard Question Log", "System Queue Link"], "SQL queries structured data."],
-        ["Git", "Which command saves staged changes to local history?", "git commit", ["git pull", "git status", "git branch"], "git commit records a snapshot."]
+        ["Git", "Which command saves staged changes to local history?", "git commit", ["git pull", "git status", "git branch"], "git commit records a snapshot."],
+        ["JavaScript", "What does the === operator compare?", "Value and type", ["Only the value", "Only the type", "Whether two objects are identical by contents"], "Strict equality compares value and type without coercion."],
+        ["JavaScript", "Which keyword declares a block-scoped variable that can be reassigned?", "let", ["const", "static", "define"], "let declares a block-scoped binding that can be reassigned."],
+        ["JavaScript", "Which method creates a new array by transforming each item?", "map()", ["forEach()", "find()", "some()"], "map() returns a new array containing each callback result."],
+        ["JavaScript", "What does JSON.parse() do?", "Converts JSON text into a JavaScript value", ["Converts a value into JSON text", "Sends JSON to a server", "Sorts object keys"], "JSON.parse reads JSON text and creates the represented JavaScript value."],
+        ["JavaScript", "Which browser API selects the first matching CSS selector?", "document.querySelector()", ["document.find()", "window.getSelector()", "document.css()"], "querySelector returns the first matching element."],
+        ["JavaScript", "Which event fires when a user submits a form?", "submit", ["send", "formdone", "post"], "Forms dispatch a submit event when submitted."],
+        ["JavaScript", "What is the result of typeof NaN?", "number", ["NaN", "undefined", "object"], "NaN is a special numeric value, so typeof NaN is 'number'."],
+        ["JavaScript", "Which method keeps only array items that pass a test?", "filter()", ["reduce()", "map()", "join()"], "filter() returns a new array with items that pass the callback test."],
+        ["JavaScript", "Which storage API keeps simple key/value data after a tab is closed?", "localStorage", ["sessionStorage", "history.state", "window.cache"], "localStorage persists until the site clears it or the user removes it."],
+        ["HTML", "Which element is intended for a page's main content?", "<main>", ["<aside>", "<summary>", "<small>"], "The main element identifies the dominant content of the document."],
+        ["HTML", "Which attribute provides alternative text for an image?", "alt", ["title", "caption", "description"], "The alt attribute gives text alternatives for images."],
+        ["HTML", "Which attribute connects a label to an input by its id?", "for", ["name", "target", "value"], "A label's for value should match the input's id."],
+        ["HTML", "Which element represents a standalone piece of content that could be reused?", "<article>", ["<span>", "<b>", "<br>"], "An article is a self-contained composition."],
+        ["CSS", "Which property changes the text color?", "color", ["font-color", "text-fill", "foreground"], "The color property sets an element's text color."],
+        ["CSS", "Which layout system is designed for arranging items along one axis?", "Flexbox", ["Float layout", "Table layout", "Position flow"], "Flexbox is a one-dimensional layout model."],
+        ["CSS", "Which unit is relative to the root element's font size?", "rem", ["px", "vh", "pt"], "rem is based on the root element's font size."],
+        ["Git", "Which command shows changed, staged, and untracked files?", "git status", ["git log", "git stash", "git init"], "git status summarizes the working tree and staging area."],
+        ["Git", "Which command downloads a remote repository for the first time?", "git clone", ["git merge", "git reset", "git tag"], "git clone creates a local copy of a remote repository."],
+        ["Web", "What does HTTP status code 404 mean?", "The requested resource was not found", ["The request succeeded", "The server redirected permanently", "The server is starting"], "404 indicates that the server could not find the requested resource."],
+        ["Web", "What does API commonly stand for?", "Application Programming Interface", ["Applied Program Internet", "Automated Protocol Input", "Application Process Index"], "An API defines how software components communicate."],
+        ["Web", "Which protocol secures HTTP traffic with encryption?", "HTTPS", ["FTP", "SMTP", "SSH"], "HTTPS uses TLS to protect HTTP connections."]
       ],
       geography: [
         ["Capitals", "What is the capital city of Ghana?", "Accra", ["Kumasi", "Tamale", "Cape Coast"], "Accra is the capital of Ghana."],
-        ["Rivers", "Which river is the longest in the world?", "Nile River", ["Amazon River", "Congo River", "Niger River"], "The Nile is the longest river."],
+        ["Rivers", "Which river flows through Egypt?", "Nile River", ["Amazon River", "Congo River", "Niger River"], "The Nile flows north through Egypt to the Mediterranean Sea."],
         ["Continents", "Which continent has the largest land area?", "Asia", ["Africa", "Europe", "Australia"], "Asia is the largest continent."],
         ["Oceans", "Which ocean is the largest on Earth?", "Pacific Ocean", ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean"], "The Pacific is the largest ocean."],
-        ["Deserts", "Which is the largest hot desert in the world?", "Sahara Desert", ["Gobi Desert", "Kalahari Desert", "Mojave Desert"], "The Sahara is the largest hot desert."]
+        ["Deserts", "Which is the largest hot desert in the world?", "Sahara Desert", ["Gobi Desert", "Kalahari Desert", "Mojave Desert"], "The Sahara is the largest hot desert."],
+        ["Capitals", "What is the capital city of Japan?", "Tokyo", ["Kyoto", "Osaka", "Sapporo"], "Tokyo is Japan's capital."],
+        ["Capitals", "What is the capital city of Canada?", "Ottawa", ["Toronto", "Vancouver", "Montreal"], "Ottawa is Canada's capital."],
+        ["Capitals", "What is the capital city of Kenya?", "Nairobi", ["Mombasa", "Kisumu", "Nakuru"], "Nairobi is Kenya's capital."],
+        ["Capitals", "What is the capital city of Peru?", "Lima", ["Cusco", "Arequipa", "Trujillo"], "Lima is Peru's capital."],
+        ["Capitals", "What is the capital city of Norway?", "Oslo", ["Bergen", "Trondheim", "Stavanger"], "Oslo is Norway's capital."],
+        ["Capitals", "What is the capital city of Australia?", "Canberra", ["Sydney", "Melbourne", "Perth"], "Canberra is Australia's capital."],
+        ["Capitals", "What is the capital city of France?", "Paris", ["Lyon", "Nice", "Marseille"], "Paris is France's capital."],
+        ["Landmarks", "In which country is the Great Wall located?", "China", ["Japan", "India", "Mongolia"], "The Great Wall is in China."],
+        ["Landmarks", "Machu Picchu is in which country?", "Peru", ["Chile", "Bolivia", "Ecuador"], "Machu Picchu is an Inca site in Peru."],
+        ["Landmarks", "The Taj Mahal is in which Indian city?", "Agra", ["Delhi", "Jaipur", "Mumbai"], "The Taj Mahal is in Agra, India."],
+        ["Mountains", "What is the world's highest mountain above sea level?", "Mount Everest", ["K2", "Kangchenjunga", "Denali"], "Mount Everest has the highest summit above sea level."],
+        ["Mountains", "Which mountain range runs along the western edge of South America?", "The Andes", ["The Alps", "The Rockies", "The Atlas Mountains"], "The Andes extend along western South America."],
+        ["Oceans", "Which ocean lies between Africa and Australia?", "Indian Ocean", ["Atlantic Ocean", "Arctic Ocean", "Southern Ocean"], "The Indian Ocean lies between Africa, Asia, and Australia."],
+        ["Landforms", "Which country contains most of the Amazon rainforest?", "Brazil", ["Argentina", "Mexico", "Peru"], "Most of the Amazon rainforest is in Brazil."],
+        ["Landmarks", "The Great Barrier Reef is off the coast of which country?", "Australia", ["South Africa", "India", "Mexico"], "The Great Barrier Reef lies off northeastern Australia."],
+        ["Countries", "Which is the world's largest country by land area?", "Russia", ["Canada", "China", "United States"], "Russia is the largest country by area."],
+        ["Countries", "Which is the world's smallest independent country by area?", "Vatican City", ["Monaco", "San Marino", "Liechtenstein"], "Vatican City is the smallest sovereign state by area."],
+        ["Countries", "Which country is famous for the fjords around Bergen?", "Norway", ["Sweden", "Finland", "Denmark"], "Norway's western coast is known for its fjords."],
+        ["Continents", "On which continent is the Sahara Desert?", "Africa", ["Asia", "South America", "Australia"], "The Sahara stretches across northern Africa."],
+        ["Continents", "Which continent contains the South Pole?", "Antarctica", ["Europe", "Asia", "South America"], "The South Pole is in Antarctica."],
+        ["Countries", "Which country has the city of Istanbul?", "Türkiye", ["Greece", "Bulgaria", "Egypt"], "Istanbul is a major city in Türkiye."],
+        ["Countries", "Which country is an island nation east of China and Korea?", "Japan", ["Nepal", "Laos", "Mongolia"], "Japan is an island nation in East Asia."],
+        ["Countries", "Which country has the cities of Casablanca and Marrakesh?", "Morocco", ["Tunisia", "Algeria", "Egypt"], "Casablanca and Marrakesh are cities in Morocco."],
+        ["Countries", "Which country is directly south of the United States?", "Mexico", ["Cuba", "Guatemala", "Costa Rica"], "Mexico shares the United States' southern land border."]
       ],
       entertainment: [
         ["Animation", "Which movie features a snowman named Olaf?", "Frozen", ["Moana", "Tangled", "Encanto"], "Olaf is in Frozen."],
         ["Studio", "Which studio made 'Spirited Away'?", "Studio Ghibli", ["Pixar", "DreamWorks", "Illumination"], "Studio Ghibli produced Spirited Away."],
         ["Music", "Who is known as the 'King of Pop'?", "Michael Jackson", ["Elvis Presley", "Prince", "Stevie Wonder"], "Michael Jackson is the King of Pop."],
         ["Gaming", "What does 'NPC' stand for in video games?", "Non-Player Character", ["New Player Control", "Next Playable Class", "Network Player Core"], "NPC means Non-Player Character."],
-        ["Film", "Which movie features Captain Jack Sparrow?", "Pirates of the Caribbean", ["Star Wars", "Dune", "Inception"], "Jack Sparrow is in Pirates of the Caribbean."]
+        ["Film", "Which movie features Captain Jack Sparrow?", "Pirates of the Caribbean", ["Star Wars", "Dune", "Inception"], "Jack Sparrow is in Pirates of the Caribbean."],
+        ["Books", "Who wrote the Harry Potter series?", "J. K. Rowling", ["J. R. R. Tolkien", "C. S. Lewis", "Roald Dahl"], "J. K. Rowling wrote the Harry Potter books."],
+        ["Film", "Which animated film features a toy cowboy named Woody?", "Toy Story", ["Cars", "Up", "Ratatouille"], "Woody is one of the main characters in Toy Story."],
+        ["Gaming", "Which company created the Mario series?", "Nintendo", ["Sega", "Atari", "Sony"], "Mario is a Nintendo video game character."],
+        ["Comics", "What is the name of Batman's home city?", "Gotham City", ["Metropolis", "Star City", "Central City"], "Batman stories are set primarily in Gotham City."],
+        ["Books", "Who is the detective in 'The Hound of the Baskervilles'?", "Sherlock Holmes", ["Hercule Poirot", "Miss Marple", "Philip Marlowe"], "The novel features Sherlock Holmes and Dr. Watson."],
+        ["Film", "What is the name of the blue people in the film 'Avatar'?", "Na'vi", ["Wookiees", "Elves", "Klingons"], "The Na'vi are the indigenous people of Pandora in Avatar."],
+        ["Television", "In which fictional town is 'Stranger Things' mainly set?", "Hawkins", ["Riverdale", "Sunnydale", "Smallville"], "The series is mainly set in Hawkins, Indiana."],
+        ["Film", "What glowing weapon is used by Jedi in Star Wars?", "Lightsaber", ["Phaser", "Wand", "Blaster staff"], "Jedi are known for using lightsabers."],
+        ["Gaming", "Which game features a character named Creeper?", "Minecraft", ["Fortnite", "Roblox", "Terraria"], "Creepers are hostile mobs in Minecraft."],
+        ["Gaming", "Who created the original video game Tetris?", "Alexey Pajitnov", ["Shigeru Miyamoto", "Hideo Kojima", "Sid Meier"], "Alexey Pajitnov created Tetris in the Soviet Union."],
+        ["Animation", "Which franchise features the character Pikachu?", "Pokémon", ["Digimon", "Mogwai", "Sonic the Hedgehog"], "Pikachu is one of the best-known Pokémon characters."],
+        ["Books", "Who is the ring-bearer in much of 'The Lord of the Rings'?", "Frodo Baggins", ["Bilbo Baggins", "Samwise Gamgee", "Peregrin Took"], "Frodo carries the One Ring toward Mordor."],
+        ["Music", "Which band recorded 'Hey Jude'?", "The Beatles", ["The Rolling Stones", "Queen", "The Kinks"], "The Beatles released 'Hey Jude' in 1968."],
+        ["Music", "Which instrument has keys, pedals, and strings struck by hammers?", "Piano", ["Flute", "Trumpet", "Violin"], "A piano uses keys to make hammers strike strings."],
+        ["Film", "Which fictional archaeologist is played by Harrison Ford in a film series?", "Indiana Jones", ["James Bond", "Han Solo", "Rick Deckard"], "Harrison Ford plays Indiana Jones."],
+        ["Comics", "What is the real name of Spider-Man?", "Peter Parker", ["Bruce Wayne", "Clark Kent", "Tony Stark"], "Peter Parker is Spider-Man's best-known identity."],
+        ["Animation", "What is the name of the family in 'The Simpsons'?", "The Simpsons", ["The Griffins", "The Belchers", "The Jetsons"], "The series follows the Simpson family."],
+        ["Film", "Which film series features a school called Hogwarts?", "Harry Potter", ["The Hunger Games", "Twilight", "The Chronicles of Narnia"], "Hogwarts is the wizarding school in Harry Potter."],
+        ["Gaming", "Which game series features the kingdom of Hyrule?", "The Legend of Zelda", ["Final Fantasy", "Sonic the Hedgehog", "God of War"], "Many Legend of Zelda games take place in Hyrule."],
+        ["Animation", "What kind of animal is Dumbo?", "Elephant", ["Mouse", "Duck", "Horse"], "Dumbo is a young elephant with unusually large ears."],
+        ["Film", "Which fictional spy is known by the code number 007?", "James Bond", ["Jason Bourne", "Ethan Hunt", "Austin Powers"], "007 is the code number of James Bond."],
+        ["Gaming", "Which company makes the PlayStation console?", "Sony", ["Microsoft", "Nintendo", "Sega"], "PlayStation is a video game console brand made by Sony."],
+        ["Books", "Who wrote 'The Hobbit'?", "J. R. R. Tolkien", ["C. S. Lewis", "George Orwell", "Ursula K. Le Guin"], "J. R. R. Tolkien wrote The Hobbit."],
+        ["Film", "Which Pixar film features a robot named WALL-E?", "WALL-E", ["Finding Nemo", "Coco", "Inside Out"], "WALL-E follows a small waste-collecting robot on Earth."]
       ]
     };
 
+    const pools = genQuestion.pools;
     const list = pools[c] || pools.programming;
     const row = list[n % list.length];
-    const cycle = Math.floor(n / list.length) + 1;
-    const prompt = cycle > 1 ? `${row[1]} (#${cycle})` : row[1];
-    return makeItem(row[0], prompt, row[2], row[3], row[4]);
+    return makeItem(row[0], row[1], row[2], row[3], row[4]);
   }
 
   function buildDeck(cat, count) {
+    if (cat.toLowerCase() !== "mathematics") {
+      const bankSize = cat.toLowerCase() === "programming" ? 26 : 29;
+      const indexes = shuffle(Array.from({ length: bankSize }, (_, index) => index)).slice(0, count);
+      return indexes.map((index) => genQuestion(cat, index));
+    }
+
     const out = [];
-    for (let i = 0; i < count; i++) {
-      out.push(genQuestion(cat, i));
+    const seen = new Set();
+    let attempts = 0;
+    while (out.length < count && attempts < count * 20) {
+      const item = genQuestion(cat, out.length + attempts);
+      attempts++;
+      if (seen.has(item.question)) continue;
+      seen.add(item.question);
+      out.push(item);
     }
     return out;
   }
@@ -704,29 +1040,35 @@
     }
   }
 
-  function startTimer() {
+  function startTimer(reset = true) {
     stopTimer();
-    timeLeft = TIME_PER_QUESTION;
+    if (reset) timeLeft = TIME_PER_QUESTION;
     timerText.textContent = `${timeLeft}s`;
-    timerBox.style.background = "var(--timer-grey)";
+    timerBox.style.background = timeLeft <= 5 ? "var(--timer-red)" : "var(--timer-grey)";
 
     timerId = setInterval(() => {
       timeLeft--;
       timerText.textContent = `${timeLeft}s`;
       if (timeLeft > 0 && timeLeft <= 5) sfx.tick();
+      saveAttempt();
 
       if (timeLeft <= 0) {
         stopTimer();
+        answered = true;
         timerBox.style.background = "var(--timer-red)";
         mistakes++;
         missedList.push(currentQ);
+        pickedAnswer = null;
+        answers[qIndex - 1] = { selectedIndex: null, isCorrect: false, timedOut: true };
         sfx.wrong();
         updateStatsBar();
         revealOptions(null);
         lockOptions();
-        explanationText.textContent = t().timedOutNote(currentQ.explanation);
+        feedbackText = t().timedOutNote(currentQ.explanation);
+        explanationText.textContent = feedbackText;
         explanationText.style.display = "block";
         nextQuestionBtn.style.visibility = "visible";
+        saveAttempt();
       }
     }, 1000);
   }
@@ -741,6 +1083,7 @@
   function lockOptions() {
     answerOptions.querySelectorAll(".answer-option").forEach((li) => {
       li.style.pointerEvents = "none";
+      li.setAttribute("aria-disabled", "true");
     });
   }
 
@@ -755,8 +1098,12 @@
   }
 
   function pickAnswer(li, idx) {
+    if (answered) return;
+    answered = true;
     stopTimer();
     const ok = idx === currentQ.correctAnswer;
+    pickedAnswer = idx;
+    answers[qIndex - 1] = { selectedIndex: idx, isCorrect: ok, timedOut: false };
     if (ok) {
       score++;
       sfx.right();
@@ -768,9 +1115,54 @@
     updateStatsBar();
     revealOptions(idx);
     lockOptions();
-    explanationText.textContent = currentQ.explanation;
+    feedbackText = currentQ.explanation;
+    explanationText.textContent = feedbackText;
     explanationText.style.display = "block";
     nextQuestionBtn.style.visibility = "visible";
+    saveAttempt();
+  }
+
+  function renderCurrentQuestion() {
+    const tr = t();
+    progressFill.style.width = `${Math.round((qIndex / questions.length) * 100)}%`;
+    progressFill.parentElement.setAttribute("aria-valuenow", String(Math.round((qIndex / questions.length) * 100)));
+    questionStatus.textContent = tr.statusText(qIndex, questions.length);
+    questionText.textContent = currentQ.question;
+    answerOptions.innerHTML = "";
+    updateStatsBar();
+
+    currentQ.options.forEach((opt, idx) => {
+      const li = document.createElement("li");
+      li.className = "answer-option";
+      li.tabIndex = answered ? -1 : 0;
+      li.setAttribute("role", "button");
+      li.setAttribute("aria-label", `Answer ${idx + 1}: ${opt}`);
+      li.textContent = opt;
+      li.addEventListener("click", () => pickAnswer(li, idx));
+      li.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          pickAnswer(li, idx);
+        }
+      });
+      answerOptions.appendChild(li);
+    });
+
+    if (answered) {
+      revealOptions(pickedAnswer);
+      lockOptions();
+      explanationText.textContent = feedbackText || currentQ.explanation;
+      explanationText.style.display = "block";
+      nextQuestionBtn.style.visibility = "visible";
+      timerText.textContent = `${timeLeft}s`;
+      timerBox.style.background = answers[qIndex - 1] && answers[qIndex - 1].timedOut ? "var(--timer-red)" : "var(--timer-grey)";
+    } else {
+      explanationText.textContent = "";
+      explanationText.style.display = "none";
+      nextQuestionBtn.style.visibility = "hidden";
+      startTimer(false);
+    }
+    saveAttempt();
   }
 
   function renderNext() {
@@ -781,33 +1173,24 @@
 
     currentQ = questions[qIndex];
     qIndex++;
-
-    const tr = t();
-    progressFill.style.width = `${Math.round((qIndex / questions.length) * 100)}%`;
-    questionStatus.textContent = tr.statusText(qIndex, questions.length);
-    questionText.textContent = currentQ.question;
-    explanationText.style.display = "none";
-    nextQuestionBtn.style.visibility = "hidden";
-    answerOptions.innerHTML = "";
-    updateStatsBar();
-
-    currentQ.options.forEach((opt, idx) => {
-      const li = document.createElement("li");
-      li.className = "answer-option";
-      li.textContent = opt;
-      li.addEventListener("click", () => pickAnswer(li, idx));
-      answerOptions.appendChild(li);
-    });
-
-    startTimer();
+    timeLeft = TIME_PER_QUESTION;
+    answered = false;
+    pickedAnswer = null;
+    feedbackText = "";
+    renderCurrentQuestion();
   }
 
   function beginQuiz(overrideList) {
     questions = overrideList || buildDeck(selectedCategory, selectedCount);
     missedList = [];
+    answers = [];
     qIndex = 0;
     score = 0;
     mistakes = 0;
+    answered = false;
+    pickedAnswer = null;
+    feedbackText = "";
+    clearSavedAttempt();
     recordBackgroundAdaptation();
     showOnly(quizScreen);
     renderNext();
@@ -815,12 +1198,17 @@
 
   function finishSession() {
     stopTimer();
+    clearSavedAttempt();
     const tr = t();
     const tot = questions.length;
     const maxErr = getMaxMistakes(tot);
     const passed = mistakes <= maxErr;
 
     showOnly(resultScreen);
+    renderAnswerReview();
+    reviewPanel.style.display = "none";
+    toggleReviewBtn.setAttribute("aria-expanded", "false");
+    toggleReviewBtn.textContent = tr.reviewBtn;
     retryMissedBtn.style.display = missedList.length > 0 ? "inline-block" : "none";
 
     if (passed) {
@@ -867,7 +1255,9 @@
     saveUser();
     signupName.value = user.name || "";
     signupAge.value = user.age || "";
+    signupEmail.value = user.email || "";
     signupMethod.value = user.method || "Email";
+    signupMethod.dispatchEvent(new Event("change"));
     signupVoice.value = user.voice || "female";
     draftAvatarType = user.avatarType || "letter";
     draftAvatarPhoto = user.avatarPhoto || "";
@@ -885,6 +1275,12 @@
 
   signupName.addEventListener("input", () => {
     applyAvatar(signupAvatarPreview, signupName.value, draftAvatarType, draftAvatarPhoto);
+  });
+
+  signupMethod.addEventListener("change", () => {
+    signupEmailField.hidden = signupMethod.value === "Guest";
+    signupEmail.required = signupMethod.value === "Email";
+    document.getElementById("methodHint").textContent = t().methodHint(signupMethod.value);
   });
 
   useLetterBtn.addEventListener("click", () => {
@@ -914,6 +1310,7 @@
     sfx.tap();
     user.name = signupName.value.trim();
     user.age = signupAge.value.trim();
+    user.email = signupMethod.value === "Guest" ? "" : signupEmail.value.trim();
     user.method = signupMethod.value;
     user.voice = signupVoice.value;
     user.avatarType = draftAvatarType;
@@ -927,15 +1324,28 @@
   // Navigation Bar Listeners
   navQuizBtn.addEventListener("click", () => {
     sfx.tap();
+    if (quizScreen.style.display === "block" && !window.confirm("Leave this quiz? You can resume it from Home.")) return;
     stopTimer();
+    if (questions.length) saveAttempt();
     showOnly(configScreen);
   });
 
   navAccountBtn.addEventListener("click", () => {
     sfx.tap();
+    if (quizScreen.style.display === "block" && !window.confirm("Leave this quiz? You can resume it from Home.")) return;
     stopTimer();
+    if (questions.length) saveAttempt();
     applyAllTranslations();
     showOnly(accountScreen);
+  });
+
+  navSettingsBtn.addEventListener("click", () => {
+    sfx.tap();
+    if (quizScreen.style.display === "block" && !window.confirm("Leave this quiz? You can resume it from Home.")) return;
+    stopTimer();
+    if (questions.length) saveAttempt();
+    applyAllTranslations();
+    showOnly(settingsScreen);
   });
 
   navSfxBtn.addEventListener("click", () => {
@@ -970,8 +1380,10 @@
     sfx.tap();
     signupName.value = user.name || "";
     signupAge.value = user.age || "";
+    signupEmail.value = user.email || "";
     signupMethod.value = user.method || "Email";
     signupVoice.value = user.voice || "female";
+    signupMethod.dispatchEvent(new Event("change"));
     draftAvatarType = user.avatarType || "letter";
     draftAvatarPhoto = user.avatarPhoto || "";
     useLetterBtn.classList.toggle("active", draftAvatarType === "letter");
@@ -990,6 +1402,7 @@
       sfx.tap();
       document.querySelectorAll(".category-option").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
+      document.querySelectorAll(".category-option").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
       selectedCategory = btn.dataset.cat;
     });
   });
@@ -999,6 +1412,7 @@
       sfx.tap();
       document.querySelectorAll(".question-option").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
+      document.querySelectorAll(".question-option").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
       selectedCount = parseInt(btn.dataset.count, 10);
       applyAllTranslations();
     });
@@ -1006,7 +1420,26 @@
 
   startQuizBtn.addEventListener("click", () => {
     sfx.tap();
+    if (savedAttempt && !window.confirm("Start a new quiz and replace the saved run?")) return;
     beginQuiz(null);
+  });
+
+  resumeQuizBtn.addEventListener("click", () => {
+    sfx.tap();
+    resumeSavedAttempt();
+  });
+
+  discardResumeBtn.addEventListener("click", () => {
+    sfx.tap();
+    clearSavedAttempt();
+  });
+
+  toggleReviewBtn.addEventListener("click", () => {
+    sfx.tap();
+    const opening = reviewPanel.style.display !== "block";
+    reviewPanel.style.display = opening ? "block" : "none";
+    toggleReviewBtn.setAttribute("aria-expanded", String(opening));
+    toggleReviewBtn.textContent = opening ? t().hideReviewBtn : t().reviewBtn;
   });
 
   nextQuestionBtn.addEventListener("click", () => {
@@ -1027,7 +1460,15 @@
     }
   });
 
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && quizScreen.style.display === "block") saveAttempt();
+  });
+  window.addEventListener("beforeunload", () => {
+    if (quizScreen.style.display === "block") saveAttempt();
+  });
+
   // Boot
+  savedAttempt = loadAttempt();
   applyAllTranslations();
   if (user.registered && user.name) {
     showOnly(configScreen);
@@ -1037,3 +1478,4 @@
     showOnly(onboardingScreen);
   }
 })();
+
