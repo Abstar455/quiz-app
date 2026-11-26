@@ -70,7 +70,9 @@
     }
   }
   function authRedirectUrl() {
-    return window.location.protocol === "file:" ? "http://localhost:3000/" : window.location.href;
+    const publicAppUrl = "https://abstar455.github.io/quiz-app/";
+    const localHost = window.location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(window.location.hostname);
+    return localHost ? publicAppUrl : window.location.href;
   }
   async function guest() {
     if (!client) throw new Error("The multiplayer backend is not connected yet.");
@@ -460,8 +462,8 @@
   $("joinCodeInput").addEventListener("input", () => {
     $("joinCodeInput").value = $("joinCodeInput").value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0,6);
   });
-  $("linkGoogleAccountBtn").addEventListener("click", () => linkProvider("google"));
-  $("linkAppleAccountBtn").addEventListener("click", () => linkProvider("apple"));
+  if ($("linkGoogleAccountBtn")) $("linkGoogleAccountBtn").addEventListener("click", () => linkProvider("google"));
+  if ($("linkAppleAccountBtn")) $("linkAppleAccountBtn").addEventListener("click", () => linkProvider("apple"));
   $("linkEmailForm").addEventListener("submit", linkEmail);
   $("signInEmailAccountBtn").addEventListener("click", signInExistingEmail);
   if (client) {
