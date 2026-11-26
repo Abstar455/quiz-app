@@ -6,6 +6,7 @@
   }) : null;
   const roomKey = "quiz_race_room_id";
   const nickKey = "quiz_race_nickname";
+  const lastRaceKey = "quiz_race_last_room_results";
   const $ = (id) => document.getElementById(id);
   let user = null, roomId = "", state = null, channel = null, poll = null, clock = null, busy = false;
   let online = new Set();
@@ -178,50 +179,6 @@
       addRow(scores, p.nickname, Number(p.score || 0).toLocaleString() + " pts", isOnline);
     });
   }
-  function renderLeaderboard(list, id, chartId) {
-    const root = $(id);
-    root.replaceChildren();
-    const chart = chartId ? $(chartId) : null;
-    if (chart) chart.replaceChildren();
-
-    if (!list || !list.length) {
-      const li = document.createElement("li");
-      li.className = "room-player";
-      li.textContent = "No linked-account scores yet. Save your stats after joining an account.";
-      root.appendChild(li);
-      if (chart) {
-        const empty = document.createElement("p");
-        empty.className = "leaderboard-chart-empty";
-        empty.textContent = "The chart will appear when linked players have finished races.";
-        chart.appendChild(empty);
-      }
-      return;
-    }
-
-    const maxWins = Math.max(1, ...list.map((entry) => Number(entry.races_won || 0)));
-    if (chart) list.slice(0, 10).forEach((entry, index) => {
-      const wins = Number(entry.races_won || 0);
-      const row = document.createElement("div"); row.className = "leaderboard-bar-row"; row.setAttribute("aria-label", entry.nickname + ": " + wins + " wins");
-      const label = document.createElement("span"); label.className = "leaderboard-bar-label";
-      label.textContent = (index + 1) + ". " + entry.nickname;
-      const track = document.createElement("span"); track.className = "leaderboard-bar-track";
-      const bar = document.createElement("span"); bar.className = "leaderboard-bar-fill";
-      bar.style.width = (wins ? Math.max(5, (wins / maxWins) * 100) : 0) + "%";
-      track.appendChild(bar);
-      const value = document.createElement("span"); value.className = "leaderboard-bar-value";
-      value.textContent = wins + " wins";
-      row.append(label, track, value); chart.appendChild(row);
-    });
-
-    list.forEach((entry, index) => {
-      const li = document.createElement("li"); li.className = "room-player";
-      const name = document.createElement("strong");
-      name.textContent = (index + 1) + ". " + entry.nickname;
-      const score = document.createElement("span");
-      score.textContent = entry.races_won + " wins · " + Number(entry.total_points).toLocaleString() + " pts";
-      li.append(name, score); root.appendChild(li);
-    });
-  }
   function renderFriendsChart(players, chartId) {
     const chart = $(chartId || "raceFriendsChart");
     chart.replaceChildren();
@@ -231,19 +188,46 @@
       empty.textContent = "Race scores will appear here when this room finishes."; chart.appendChild(empty); return;
     }
     const maxScore = Math.max(1, ...ranked.map((player) => Number(player.score || 0)));
+    const totalPoints = ranked.reduce((sum, player) => sum + Number(player.score || 0), 0);
+    const header = document.createElement("div"); header.className = "leaderboard-chart-header";
+    const title = document.createElement("strong"); title.textContent = ranked.length + (ranked.length === 1 ? " player" : " players");
+    const meta = document.createElement("span"); meta.textContent = totalPoints.toLocaleString() + " points earned";
+    header.append(title, meta); chart.appendChild(header);
     ranked.forEach((player, index) => {
       const points = Number(player.score || 0);
-      const row = document.createElement("div"); row.className = "leaderboard-bar-row";
+      const row = document.createElement("div"); row.className = "leaderboard-bar-row rank-" + (index + 1);
       row.setAttribute("aria-label", (index + 1) + ". " + player.nickname + ": " + points + " points");
+      const rank = document.createElement("span"); rank.className = "leaderboard-rank"; rank.textContent = "#" + (index + 1);
+      const playerCell = document.createElement("div"); playerCell.className = "leaderboard-player-cell";
       const label = document.createElement("span"); label.className = "leaderboard-bar-label";
-      label.textContent = (index + 1) + ". " + player.nickname;
+      label.textContent = player.nickname;
       const track = document.createElement("span"); track.className = "leaderboard-bar-track";
       const bar = document.createElement("span"); bar.className = "leaderboard-bar-fill";
       bar.style.width = (points ? Math.max(5, points / maxScore * 100) : 0) + "%";
-      track.appendChild(bar);
+      track.setAttribute("aria-hidden", "true"); track.appendChild(bar); playerCell.append(label, track);
       const value = document.createElement("span"); value.className = "leaderboard-bar-value";
       value.textContent = points.toLocaleString() + " pts";
-      row.append(label, track, value); chart.appendChild(row);
+      row.append(rank, playerCell, value); chart.appendChild(row);
+    });
+  }
+  function renderScoreList(players, listId) {
+    const root = $(listId); root.replaceChildren();
+    (players || []).slice().sort((a, b) => Number(b.score || 0) - Number(a.score || 0)).forEach((player, index) => {
+      const row = document.createElement("li"); row.className = "room-player";
+      const name = document.createElement("strong"); name.textContent = (index + 1) + ". " + player.nickname;
+      const score = document.createElement("span"); score.textContent = Number(player.score || 0).toLocaleString() + " pts";
+      row.append(name, score); root.appendChild(row);
+    });
+  }
+  function renderPodium(players) {
+    const podium = $("racePodium"); podium.replaceChildren();
+    (players || []).slice().sort((a, b) => Number(b.score || 0) - Number(a.score || 0)).slice(0, 3).forEach((player, index) => {
+      const card = document.createElement("div"); card.className = "podium-card rank-" + (index + 1);
+      const place = document.createElement("span"); place.className = "podium-rank";
+      place.textContent = ["🥇 1st place", "🥈 2nd place", "🥉 3rd place"][index];
+      const name = document.createElement("strong"); name.className = "podium-name"; name.textContent = player.nickname;
+      const score = document.createElement("span"); score.className = "podium-score"; score.textContent = Number(player.score || 0).toLocaleString() + " pts";
+      card.append(place, name, score); podium.appendChild(card);
     });
   }
   function renderReview(review, myAnswers) {
@@ -306,11 +290,18 @@
     } else stopClock();
 
     if (room.status === "finished") {
-      const podium = $("racePodium"); podium.replaceChildren();
-      players.slice(0, 10).forEach((p, i) => addRow(podium, (i + 1) + ". " + p.nickname, Number(p.score || 0).toLocaleString() + " pts", false));
+      renderPodium(players);
       renderFriendsChart(players, "raceFriendsChart");
+      renderScoreList(players, "raceFinalScores");
       renderReview(data.review, data.myAnswers);
-      renderLeaderboard(data.persistentLeaderboard, "racePersistentLeaderboard", "racePersistentLeaderboardChart");
+      try {
+        sessionStorage.setItem(lastRaceKey, JSON.stringify({
+          roomCode: room.room_code,
+          category: room.category,
+          finishedAt: Date.now(),
+          players: players.map((player) => ({ nickname: player.nickname, score: Number(player.score || 0) }))
+        }));
+      } catch (_) {}
     }
   }
   function stopClock() { if (clock) clearInterval(clock); clock = null; }
@@ -408,20 +399,17 @@
   }
   async function loadLeaderboard() {
     panel("leaderboard");
-    const root = $("globalLeaderboard"); root.replaceChildren();
-    const chart = $("globalLeaderboardChart"); chart.replaceChildren();
-    const loadingRow = document.createElement("li"); loadingRow.className = "room-player"; loadingRow.textContent = "Loading leaderboard…"; root.appendChild(loadingRow);
-    const loadingChart = document.createElement("p"); loadingChart.className = "leaderboard-chart-empty"; loadingChart.textContent = "Loading player stats…"; chart.appendChild(loadingChart);
-    try {
-      const result = await api("leaderboard");
-      renderLeaderboard(result.leaderboard, "globalLeaderboard", "globalLeaderboardChart");
-    } catch (error) {
-      const message = authErrorMessage(error);
-      root.replaceChildren();
-      const failed = document.createElement("li"); failed.className = "room-player"; failed.textContent = message; root.appendChild(failed);
-      chart.replaceChildren();
-      const chartError = document.createElement("p"); chartError.className = "leaderboard-chart-empty"; chartError.textContent = "Chart unavailable: " + message; chart.appendChild(chartError);
-    }
+    let latest = null;
+    try { latest = JSON.parse(sessionStorage.getItem(lastRaceKey) || "null"); } catch (_) {}
+    const players = latest && Array.isArray(latest.players) ? latest.players : [];
+    const hasResults = players.length > 0;
+    $("friendsLeaderboardEmpty").hidden = hasResults;
+    $("friendsLeaderboardResults").hidden = !hasResults;
+    if (!hasResults) return;
+    const room = latest.roomCode ? "Room " + latest.roomCode : "Latest room";
+    $("friendsLeaderboardCaption").textContent = [latest.category, room, "room-only scores"].filter(Boolean).join(" · ");
+    renderFriendsChart(players, "friendsLeaderboardChart");
+    renderScoreList(players, "friendsLeaderboardList");
   }
   async function reset(callLeave) {
     stopClock();
@@ -492,4 +480,3 @@
     }).catch(() => { sessionStorage.removeItem(roomKey); sessionStorage.removeItem(nickKey); });
   }
 })();
-
