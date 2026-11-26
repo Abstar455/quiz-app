@@ -134,26 +134,27 @@
         </div>
       </div>
 
-      <div class="account-auth-panel">
-        <div class="eyebrow">OPTIONAL ACCOUNT</div>
-        <h3>Keep your race stats</h3>
-        <p id="raceAccountStatus" class="screen-subtext">Play as a guest, or link an account to keep your leaderboard stats across devices.</p>
+      <section class="account-auth-panel" aria-labelledby="accountSyncHeading">
+        <div class="eyebrow">OPTIONAL · FREE</div>
+        <h3 id="accountSyncHeading">Save your race stats</h3>
+        <p id="raceAccountStatus" class="account-status-copy">Play as a guest, or link an account to keep leaderboard stats across devices.</p>
         <div class="account-provider-actions">
-          <button type="button" class="secondary-btn" id="linkGoogleAccountBtn">Connect Google</button>
-          <button type="button" class="secondary-btn" id="linkAppleAccountBtn">Connect Apple</button>
+          <button type="button" class="secondary-btn" id="linkGoogleAccountBtn">Continue with Google</button>
+          <button type="button" class="secondary-btn" id="linkAppleAccountBtn">Continue with Apple</button>
         </div>
-        <form id="linkEmailForm" class="form-stack">
+        <form id="linkEmailForm" class="form-stack account-email-form">
           <div class="field">
-            <label for="raceAccountEmail">Email for a sign-in link</label>
+            <label for="raceAccountEmail">Email address</label>
             <input type="email" id="raceAccountEmail" autocomplete="email" maxlength="120" placeholder="you@example.com" />
           </div>
-          <div class="account-provider-actions">
-            <button type="submit" class="primary-btn" id="linkEmailAccountBtn">Link email</button>
-            <button type="button" class="secondary-btn" id="signInEmailAccountBtn">I have an account</button>
+          <div class="account-provider-actions account-email-actions">
+            <button type="submit" class="primary-btn" id="linkEmailAccountBtn">Send link to save stats</button>
+            <button type="button" class="secondary-btn" id="signInEmailAccountBtn">Sign in</button>
           </div>
+          <p class="account-email-hint">We’ll email you a secure link. No password needed.</p>
         </form>
-        <p id="raceAccountMessage" class="field-hint" role="status"></p>
-      </div>
+        <p id="raceAccountMessage" class="account-feedback" role="status" aria-live="polite"></p>
+      </section>
 
       <div class="btn-row account-actions">
         <button type="button" class="secondary-btn" id="reEditProfileBtn">Edit Profile</button>
@@ -303,6 +304,7 @@
           <div id="raceReviewList" class="race-review-list" hidden></div>
           <div class="persistent-leaderboard-block">
             <h4 class="list-heading">All-time leaderboard</h4>
+            <div id="racePersistentLeaderboardChart" class="leaderboard-chart" role="img" aria-label="Race wins by player"></div>
             <ol id="racePersistentLeaderboard" class="room-player-list score-list"></ol>
           </div>
           <button type="button" class="primary-btn full-btn" id="newRaceBtn">Back to race lobby</button>
@@ -314,6 +316,7 @@
         <div class="eyebrow">TOP PLAYERS</div>
         <h3>Leaderboard</h3>
         <p class="screen-subtext">Persistent stats are saved for players with a linked account.</p>
+        <div id="globalLeaderboardChart" class="leaderboard-chart" role="img" aria-label="Race wins by player"></div>
         <ol id="globalLeaderboard" class="room-player-list score-list"></ol>
       </section>
     </section>
