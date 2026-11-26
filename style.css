@@ -997,4 +997,5 @@ body { padding-bottom: calc(104px + env(safe-area-inset-bottom)); }
 .friends-race-chart-panel { margin-top: 14px; }
 .friends-race-chart-panel .list-heading { margin: 10px 0 4px; }
 .race-chart-caption { color: var(--muted); font-size: 0.72rem; line-height: 1.45; }
+.account-provider-note { margin: 6px 0 10px; color: var(--muted); font-size: 0.74rem; line-height: 1.4; }
 
