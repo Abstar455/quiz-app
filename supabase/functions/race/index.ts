@@ -105,18 +105,7 @@ async function getRoomState(roomId: string, userId: string) {
     .eq("room_id", roomId).eq("user_id", userId).eq("question_index", room.question_index).maybeSingle();
   if (answerError) throw answerError;
 
-  let persistentLeaderboard = null;
-  if (room.status === "finished") {
-    const { data: stats, error: statsError } = await admin.from("player_stats")
-      .select("nickname,races_played,races_won,correct_answers,total_points")
-      .order("races_won", { ascending: false })
-      .order("total_points", { ascending: false })
-      .limit(50);
-    if (statsError) throw statsError;
-    persistentLeaderboard = stats;
-  }
-
-  return { room, players: players ?? [], question, myAnswer: answer, review, myAnswers, persistentLeaderboard };
+  return { room, players: players ?? [], question, myAnswer: answer, review, myAnswers };
 }
 
 async function handleAction(user: { id: string; is_anonymous?: boolean }, body: Record<string, unknown>) {
@@ -270,16 +259,6 @@ async function handleAction(user: { id: string; is_anonymous?: boolean }, body: 
     return { left: true };
   }
 
-  if (action === "leaderboard") {
-    const { data, error } = await admin.from("player_stats")
-      .select("nickname,races_played,races_won,correct_answers,total_points")
-      .order("races_won", { ascending: false })
-      .order("total_points", { ascending: false })
-      .limit(50);
-    if (error) throw error;
-    return { leaderboard: data ?? [] };
-  }
-
   if (action === "syncStats") {
     if (user.is_anonymous) throw new Error("Link an account before syncing your race stats.");
     const { data: memberships, error: membershipsError } = await admin.from("race_players")
@@ -316,4 +295,3 @@ Deno.serve(async (request) => {
     return response(400, { error: message });
   }
 });
-
