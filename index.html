@@ -138,18 +138,15 @@
         <div class="eyebrow">OPTIONAL · FREE</div>
         <h3 id="accountSyncHeading">Save your race stats</h3>
         <p id="raceAccountStatus" class="account-status-copy">Play as a guest, or link an account to keep leaderboard stats across devices.</p>
-        <div class="account-provider-actions">
-          <button type="button" class="secondary-btn" id="linkGoogleAccountBtn">Continue with Google</button>
-          <button type="button" class="secondary-btn" id="linkAppleAccountBtn">Continue with Apple</button>
-        </div>
+        <p class="account-provider-note">Use Gmail, iCloud, or another email address to save your stats.</p>
         <form id="linkEmailForm" class="form-stack account-email-form">
           <div class="field">
             <label for="raceAccountEmail">Email address</label>
-            <input type="email" id="raceAccountEmail" autocomplete="email" maxlength="120" placeholder="you@example.com" />
+            <input type="email" id="raceAccountEmail" autocomplete="email" maxlength="120" placeholder="you@example.com or you@icloud.com" />
           </div>
           <div class="account-provider-actions account-email-actions">
             <button type="submit" class="primary-btn" id="linkEmailAccountBtn">Create or link with email</button>
-            <button type="button" class="secondary-btn" id="signInEmailAccountBtn">Sign in to existing account</button>
+            <button type="button" class="secondary-btn" id="signInEmailAccountBtn">Sign in</button>
           </div>
           <p class="account-email-hint">We’ll email you a secure link. No password needed.</p>
         </form>
