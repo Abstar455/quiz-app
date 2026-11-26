@@ -27,15 +27,14 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Prepare static site
+        run: |
+          mkdir -p _site
+          cp index.html style.css script.js backend-config.js multiplayer.js _site/
       - name: Upload static app
         uses: actions/upload-pages-artifact@v4
         with:
-          path: |
-            index.html
-            style.css
-            script.js
-            backend-config.js
-            multiplayer.js
+          path: _site
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
