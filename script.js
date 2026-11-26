@@ -1089,6 +1089,9 @@
 
   function revealOptions(pickedIdx) {
     answerOptions.querySelectorAll(".answer-option").forEach((li, idx) => {
+      const selected = idx === pickedIdx;
+      li.classList.toggle("is-selected", selected);
+      li.setAttribute("aria-pressed", String(selected));
       if (idx === currentQ.correctAnswer) {
         li.classList.add("correct");
       } else if (idx === pickedIdx) {
@@ -1136,6 +1139,7 @@
       li.className = "answer-option";
       li.tabIndex = answered ? -1 : 0;
       li.setAttribute("role", "button");
+      li.setAttribute("aria-pressed", "false");
       li.setAttribute("aria-label", `Answer ${idx + 1}: ${opt}`);
       li.textContent = opt;
       li.addEventListener("click", () => pickAnswer(li, idx));
@@ -1478,4 +1482,3 @@
     showOnly(onboardingScreen);
   }
 })();
-
