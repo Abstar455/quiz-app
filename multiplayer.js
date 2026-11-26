@@ -220,8 +220,8 @@
       li.append(name, score); root.appendChild(li);
     });
   }
-  function renderFriendsChart(players) {
-    const chart = $("raceFriendsChart");
+  function renderFriendsChart(players, chartId) {
+    const chart = $(chartId || "raceFriendsChart");
     chart.replaceChildren();
     const ranked = (players || []).slice().sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
     if (!ranked.length) {
@@ -277,6 +277,7 @@
       : "Waiting for the host to start the race.";
 
     if (room.status === "live") {
+      renderFriendsChart(players, "raceFriendsChartLive");
       $("raceQuestionStatus").textContent = "Question " + (room.question_index + 1) + " of " + room.question_count;
       $("raceProgressFill").style.width = Math.round(((room.question_index + 1) / room.question_count) * 100) + "%";
       $("raceQuestionText").textContent = data.question ? data.question.prompt : "Preparing question…";
@@ -305,7 +306,7 @@
     if (room.status === "finished") {
       const podium = $("racePodium"); podium.replaceChildren();
       players.slice(0, 10).forEach((p, i) => addRow(podium, (i + 1) + ". " + p.nickname, Number(p.score || 0).toLocaleString() + " pts", false));
-      renderFriendsChart(players);
+      renderFriendsChart(players, "raceFriendsChart");
       renderReview(data.review, data.myAnswers);
       renderLeaderboard(data.persistentLeaderboard, "racePersistentLeaderboard", "racePersistentLeaderboardChart");
     }
