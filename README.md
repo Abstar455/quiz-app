@@ -38,7 +38,7 @@ The repository is public, so anyone can read all committed files. The private qu
 
    `db push` creates the race tables and security policies. The Edge Function uses Supabase's server environment; never put its service-role key in website code.
 3. In the Supabase **SQL Editor**, open the local `supabase/private-question-seed.sql` file and run its contents. This file stays local and is ignored by Git; the browser never receives the answer key.
-4. In Supabase **Authentication → Sign In / Providers**, enable **Anonymous sign-ins**. Set the Site URL to the GitHub Pages website URL, and add that exact URL under the allowed redirect URLs.
+4. In Supabase **Authentication → Sign In / Providers**, enable **Anonymous sign-ins** and **Manual identity linking**. Under **URL Configuration**, set the Site URL to `https://abstar455.github.io/quiz-app/` and add that same URL under allowed redirect URLs. Google, Apple, and email providers are optional; each needs its own provider setup.
 5. Copy the project URL and the browser-safe **publishable key** into `backend-config.js`. The publishable key is designed to be public; do not use the service-role/secret key there.
 6. Push the updated `backend-config.js` to GitHub. The Pages workflow will publish the connected version.
 
@@ -51,4 +51,5 @@ Supabase Free currently lists a 500 MB database, up to 200 concurrent realtime c
 This is a first multiplayer version for casual races, not a tournament-grade anti-cheat system. Keep the question bank small enough for the free database and avoid storing sensitive personal information. The all-time leaderboard is public to app users and only includes linked accounts.
 
 Never commit database passwords, private question files, or service-role/secret keys.
+
 
