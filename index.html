@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#5145BA" />
   <meta name="description" content="A focused, friendly quiz app for quick practice and learning." />
   <title>Quiz — Learn in a few minutes</title>
@@ -137,7 +137,7 @@
       <section class="account-auth-panel" aria-labelledby="accountSyncHeading">
         <div class="eyebrow">OPTIONAL · FREE</div>
         <h3 id="accountSyncHeading">Save your race stats</h3>
-        <p id="raceAccountStatus" class="account-status-copy">Play as a guest, or link an account to keep leaderboard stats across devices.</p>
+        <p id="raceAccountStatus" class="account-status-copy">Play as a guest, or link an account to keep race stats across devices.</p>
         <p class="account-provider-note">Use Gmail, iCloud, or another email address to save your stats.</p>
         <form id="linkEmailForm" class="form-stack account-email-form">
           <div class="field">
@@ -262,7 +262,7 @@
           <input id="joinCodeInput" type="text" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="ROOM CODE" aria-label="Room code" />
           <button type="button" class="secondary-btn" id="joinRaceBtn">Join</button>
         </div>
-        <button type="button" class="secondary-btn full-btn" id="openLeaderboardBtn">View leaderboard</button>
+        <button type="button" class="secondary-btn full-btn" id="openLeaderboardBtn">Friends leaderboard</button>
       </section>
 
       <section class="race-panel room-panel" id="raceRoomPanel" hidden aria-live="polite">
@@ -293,30 +293,35 @@
           <p id="raceFeedback" class="race-feedback" role="status"></p>
           <h4 class="list-heading">Live scores</h4>
           <ol id="raceScores" class="room-player-list score-list"></ol>
-          <div class="friends-race-chart-panel"><h4 class="list-heading">Live leaderboard · players in this room</h4><div id="raceFriendsChartLive" class="leaderboard-chart" role="img" aria-label="Live points by player in this room"></div></div>
+          <div class="friends-race-chart-panel"><h4 class="list-heading">Live leaderboard · players in this room</h4><div id="raceFriendsChartLive" class="leaderboard-chart" role="region" aria-label="Live points by player in this room" aria-live="polite"></div></div>
         </div>
         <div id="raceFinishedView" hidden>
           <h3 class="race-finish-heading">Race complete</h3>
-          <div id="racePodium" class="race-podium"></div>
-          <div class="friends-race-chart-panel"><h4 class="list-heading">Race leaderboard · friends in this room</h4><p class="race-chart-caption">Compare results with everyone who joined your room.</p><div id="raceFriendsChart" class="leaderboard-chart" role="img" aria-label="Race points by player in this room"></div></div>
+          <div id="racePodium" class="race-podium" aria-label="Race podium"></div>
+          <div class="friends-race-chart-panel"><h4 class="list-heading">Race leaderboard · friends in this room</h4><p class="race-chart-caption">Compare results with everyone who joined your room.</p><div id="raceFriendsChart" class="leaderboard-chart" role="region" aria-label="Race points by player in this room" aria-live="polite"></div></div>
+          <h4 class="list-heading">Final standings</h4>
+          <ol id="raceFinalScores" class="room-player-list score-list"></ol>
           <button type="button" class="secondary-btn full-btn" id="toggleRaceReviewBtn" aria-expanded="false">Review race answers</button>
           <div id="raceReviewList" class="race-review-list" hidden></div>
-          <div class="persistent-leaderboard-block">
-            <h4 class="list-heading">All-time leaderboard</h4>
-            <div id="racePersistentLeaderboardChart" class="leaderboard-chart" role="img" aria-label="Race wins by player"></div>
-            <ol id="racePersistentLeaderboard" class="room-player-list score-list"></ol>
-          </div>
           <button type="button" class="primary-btn full-btn" id="newRaceBtn">Back to race lobby</button>
         </div>
       </section>
 
       <section class="race-panel leaderboard-panel" id="raceLeaderboardPanel" hidden>
         <button type="button" class="back-link" id="backFromLeaderboardBtn">← Back to races</button>
-        <div class="eyebrow">TOP PLAYERS</div>
-        <h3>Leaderboard</h3>
-        <p class="screen-subtext">Persistent stats are saved for players with a linked account.</p>
-        <div id="globalLeaderboardChart" class="leaderboard-chart" role="img" aria-label="Race wins by player"></div>
-        <ol id="globalLeaderboard" class="room-player-list score-list"></ol>
+        <div class="eyebrow">YOUR FRIEND GROUP</div>
+        <h3>Friends leaderboard</h3>
+        <p class="screen-subtext">Each leaderboard is limited to people who join the same room with your code. There is no public all-player ranking.</p>
+        <div id="friendsLeaderboardEmpty" class="leaderboard-empty-state">
+          <span class="leaderboard-empty-icon" aria-hidden="true">🏁</span>
+          <strong>No finished race yet</strong>
+          <p>Finish a race with friends to see its room-only chart and final standings here.</p>
+        </div>
+        <div id="friendsLeaderboardResults" hidden>
+          <p id="friendsLeaderboardCaption" class="race-chart-caption"></p>
+          <div id="friendsLeaderboardChart" class="leaderboard-chart" role="region" aria-label="Latest friends race points by player" aria-live="polite"></div>
+          <ol id="friendsLeaderboardList" class="room-player-list score-list"></ol>
+        </div>
       </section>
     </section>
 
@@ -386,4 +391,3 @@
   <script src="multiplayer.js"></script>
 </body>
 </html>
-
