@@ -103,9 +103,6 @@ create policy "room members can read their rooms"
 create policy "room members can read their roster"
   on public.race_players for select to authenticated
   using (public.is_race_member(room_id));
-create policy "players can read the public leaderboard"
-  on public.player_stats for select to authenticated using (true);
-
 -- The question bank, answer keys, answers, and writes have no client policies.
 -- Only the server-side Edge Function accesses those tables with its service key.
 
@@ -240,4 +237,3 @@ create policy "room members can publish room refresh events"
         and rp.user_id = auth.uid()
     )
   );
-
