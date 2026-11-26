@@ -148,8 +148,8 @@
             <input type="email" id="raceAccountEmail" autocomplete="email" maxlength="120" placeholder="you@example.com" />
           </div>
           <div class="account-provider-actions account-email-actions">
-            <button type="submit" class="primary-btn" id="linkEmailAccountBtn">Send link to save stats</button>
-            <button type="button" class="secondary-btn" id="signInEmailAccountBtn">Sign in</button>
+            <button type="submit" class="primary-btn" id="linkEmailAccountBtn">Create or link with email</button>
+            <button type="button" class="secondary-btn" id="signInEmailAccountBtn">Sign in to existing account</button>
           </div>
           <p class="account-email-hint">We’ll email you a secure link. No password needed.</p>
         </form>
@@ -300,6 +300,7 @@
         <div id="raceFinishedView" hidden>
           <h3 class="race-finish-heading">Race complete</h3>
           <div id="racePodium" class="race-podium"></div>
+          <div class="friends-race-chart-panel"><h4 class="list-heading">Race leaderboard · friends in this room</h4><p class="race-chart-caption">Compare results with everyone who joined your room.</p><div id="raceFriendsChart" class="leaderboard-chart" role="img" aria-label="Race points by player in this room"></div></div>
           <button type="button" class="secondary-btn full-btn" id="toggleRaceReviewBtn" aria-expanded="false">Review race answers</button>
           <div id="raceReviewList" class="race-review-list" hidden></div>
           <div class="persistent-leaderboard-block">
