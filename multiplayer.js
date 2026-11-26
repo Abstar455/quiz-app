@@ -36,14 +36,23 @@
   function authErrorMessage(error) {
     const message = String(error && error.message || "");
     const code = String(error && error.code || "");
+    if (/signups? not allowed for otp/i.test(message)) {
+      return "No account was found for that email. Sign in only works for existing accounts; use Create or link with email to make a new account.";
+    }
+    if (code === "otp_disabled") {
+      return "Supabase is rejecting email sign-in links (otp_disabled). Check that the Email provider and passwordless email sign-in are enabled in Supabase Authentication settings.";
+    }
+    if (code === "signup_disabled") {
+      return "New email accounts are disabled in Supabase. Enable email sign-ups in Authentication settings, then try again.";
+    }
     if (code === "anonymous_provider_disabled" || /anonymous sign-ins are disabled/i.test(message)) {
-      return "Guest sign-in is turned off in Supabase, so races and account linking cannot start yet. In Supabase: Authentication → Sign In / Providers → enable Anonymous Sign-Ins, then save and reload this app.";
+      return "Guest sign-in is turned off in Supabase, so open room races need Anonymous Sign-Ins enabled. Email accounts can still join after signing in.";
     }
     if (/identity.*already.*linked|already been registered|already registered/i.test(message)) {
       return "That email is already connected to an account. Use Sign in to receive a sign-in link instead.";
     }
     if (/manual.*link|identity linking/i.test(message)) {
-      return "Enable manual identity linking in Supabase Authentication settings, then try again.";
+      return "Enable Manual Identity Linking in Supabase Authentication settings, then try again.";
     }
     return message || "We couldn’t complete that request. Please try again.";
   }
@@ -59,6 +68,9 @@
       const linked = Boolean(currentUser && !currentUser.is_anonymous);
       accountPanel.querySelectorAll(".account-provider-actions, #linkEmailForm").forEach((control) => { control.hidden = linked; });
     }
+  }
+  function authRedirectUrl() {
+    return window.location.protocol === "file:" ? "http://localhost:3000/" : window.location.href;
   }
   async function guest() {
     if (!client) throw new Error("The multiplayer backend is not connected yet.");
@@ -76,8 +88,8 @@
     try {
       const currentUser = await guest();
       const result = currentUser.is_anonymous
-        ? await client.auth.linkIdentity({ provider: provider, options: { redirectTo: window.location.href } })
-        : await client.auth.signInWithOAuth({ provider: provider, options: { redirectTo: window.location.href } });
+        ? await client.auth.linkIdentity({ provider: provider, options: { redirectTo: authRedirectUrl() } })
+        : await client.auth.signInWithOAuth({ provider: provider, options: { redirectTo: authRedirectUrl() } });
       if (result.error) throw result.error;
       accountMessage("Continue in the provider window to finish linking your account.");
     } catch (error) { accountMessage(authErrorMessage(error), true); }
@@ -88,9 +100,21 @@
     if (!email) return accountMessage("Enter your email address first.", true);
     accountMessage("");
     try {
-      const currentUser = await guest();
+      let currentUser;
+      try {
+        currentUser = await guest();
+      } catch (error) {
+        if (error.code !== "anonymous_provider_disabled") throw error;
+        const created = await client.auth.signInWithOtp({
+          email: email,
+          options: { emailRedirectTo: authRedirectUrl(), shouldCreateUser: true }
+        });
+        if (created.error) throw created.error;
+        accountMessage("Check your inbox. This creates an email account for future race stats. Guest play is currently disabled, so there are no guest stats to attach.");
+        return;
+      }
       if (!currentUser.is_anonymous) throw new Error("You are already signed in.");
-      const result = await client.auth.updateUser({ email: email }, { emailRedirectTo: window.location.href });
+      const result = await client.auth.updateUser({ email: email }, { emailRedirectTo: authRedirectUrl() });
       if (result.error) throw result.error;
       accountMessage("Check your inbox to verify and link this email to your guest stats.");
     } catch (error) { accountMessage(authErrorMessage(error), true); }
@@ -102,7 +126,7 @@
     try {
       const result = await client.auth.signInWithOtp({
         email: email,
-        options: { emailRedirectTo: window.location.href, shouldCreateUser: false }
+        options: { emailRedirectTo: authRedirectUrl(), shouldCreateUser: false }
       });
       if (result.error) throw result.error;
       accountMessage("Sign-in link sent. Open it to sign in to your saved account.");
@@ -196,6 +220,30 @@
       li.append(name, score); root.appendChild(li);
     });
   }
+  function renderFriendsChart(players) {
+    const chart = $("raceFriendsChart");
+    chart.replaceChildren();
+    const ranked = (players || []).slice().sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
+    if (!ranked.length) {
+      const empty = document.createElement("p"); empty.className = "leaderboard-chart-empty";
+      empty.textContent = "Race scores will appear here when this room finishes."; chart.appendChild(empty); return;
+    }
+    const maxScore = Math.max(1, ...ranked.map((player) => Number(player.score || 0)));
+    ranked.forEach((player, index) => {
+      const points = Number(player.score || 0);
+      const row = document.createElement("div"); row.className = "leaderboard-bar-row";
+      row.setAttribute("aria-label", (index + 1) + ". " + player.nickname + ": " + points + " points");
+      const label = document.createElement("span"); label.className = "leaderboard-bar-label";
+      label.textContent = (index + 1) + ". " + player.nickname;
+      const track = document.createElement("span"); track.className = "leaderboard-bar-track";
+      const bar = document.createElement("span"); bar.className = "leaderboard-bar-fill";
+      bar.style.width = (points ? Math.max(5, points / maxScore * 100) : 0) + "%";
+      track.appendChild(bar);
+      const value = document.createElement("span"); value.className = "leaderboard-bar-value";
+      value.textContent = points.toLocaleString() + " pts";
+      row.append(label, track, value); chart.appendChild(row);
+    });
+  }
   function renderReview(review, myAnswers) {
     const root = $("raceReviewList"); root.replaceChildren();
     const byIndex = new Map((myAnswers || []).map((answer) => [answer.question_index, answer]));
@@ -257,6 +305,7 @@
     if (room.status === "finished") {
       const podium = $("racePodium"); podium.replaceChildren();
       players.slice(0, 10).forEach((p, i) => addRow(podium, (i + 1) + ". " + p.nickname, Number(p.score || 0).toLocaleString() + " pts", false));
+      renderFriendsChart(players);
       renderReview(data.review, data.myAnswers);
       renderLeaderboard(data.persistentLeaderboard, "racePersistentLeaderboard", "racePersistentLeaderboardChart");
     }
@@ -357,12 +406,18 @@
   async function loadLeaderboard() {
     panel("leaderboard");
     const root = $("globalLeaderboard"); root.replaceChildren();
-    const li = document.createElement("li"); li.className = "room-player"; li.textContent = "Loading leaderboard…"; root.appendChild(li);
+    const chart = $("globalLeaderboardChart"); chart.replaceChildren();
+    const loadingRow = document.createElement("li"); loadingRow.className = "room-player"; loadingRow.textContent = "Loading leaderboard…"; root.appendChild(loadingRow);
+    const loadingChart = document.createElement("p"); loadingChart.className = "leaderboard-chart-empty"; loadingChart.textContent = "Loading player stats…"; chart.appendChild(loadingChart);
     try {
       const result = await api("leaderboard");
       renderLeaderboard(result.leaderboard, "globalLeaderboard", "globalLeaderboardChart");
     } catch (error) {
-      root.replaceChildren(); const failed = document.createElement("li"); failed.className = "room-player"; failed.textContent = error.message; root.appendChild(failed);
+      const message = authErrorMessage(error);
+      root.replaceChildren();
+      const failed = document.createElement("li"); failed.className = "room-player"; failed.textContent = message; root.appendChild(failed);
+      chart.replaceChildren();
+      const chartError = document.createElement("p"); chartError.className = "leaderboard-chart-empty"; chartError.textContent = "Chart unavailable: " + message; chart.appendChild(chartError);
     }
   }
   async function reset(callLeave) {
