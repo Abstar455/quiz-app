@@ -33,12 +33,32 @@
     target.textContent = message || "";
     target.classList.toggle("is-error", Boolean(isError));
   }
+  function authErrorMessage(error) {
+    const message = String(error && error.message || "");
+    const code = String(error && error.code || "");
+    if (code === "anonymous_provider_disabled" || /anonymous sign-ins are disabled/i.test(message)) {
+      return "Guest sign-in is turned off in Supabase, so races and account linking cannot start yet. In Supabase: Authentication → Sign In / Providers → enable Anonymous Sign-Ins, then save and reload this app.";
+    }
+    if (/identity.*already.*linked|already been registered|already registered/i.test(message)) {
+      return "That email is already connected to an account. Use Sign in to receive a sign-in link instead.";
+    }
+    if (/manual.*link|identity linking/i.test(message)) {
+      return "Enable manual identity linking in Supabase Authentication settings, then try again.";
+    }
+    return message || "We couldn’t complete that request. Please try again.";
+  }
   function updateAccountStatus(currentUser) {
     const target = $("raceAccountStatus");
     if (!target) return;
     if (!ready) target.textContent = "Connect the free backend to link an account and sync race stats.";
     else if (currentUser && !currentUser.is_anonymous) target.textContent = "Your race stats are linked to this account and can follow you across devices.";
-    else target.textContent = "You are playing as a guest. Link Google, Apple, or email to keep race stats across devices.";
+    else if (currentUser && currentUser.is_anonymous) target.textContent = "You are playing as a guest. Link an email or provider to keep race stats across devices.";
+    else target.textContent = "To play races as a guest, enable Anonymous Sign-Ins in your Supabase project.";
+    const accountPanel = document.querySelector(".account-auth-panel");
+    if (accountPanel) {
+      const linked = Boolean(currentUser && !currentUser.is_anonymous);
+      accountPanel.querySelectorAll(".account-provider-actions, #linkEmailForm").forEach((control) => { control.hidden = linked; });
+    }
   }
   async function guest() {
     if (!client) throw new Error("The multiplayer backend is not connected yet.");
@@ -60,7 +80,7 @@
         : await client.auth.signInWithOAuth({ provider: provider, options: { redirectTo: window.location.href } });
       if (result.error) throw result.error;
       accountMessage("Continue in the provider window to finish linking your account.");
-    } catch (error) { accountMessage(error.message, true); }
+    } catch (error) { accountMessage(authErrorMessage(error), true); }
   }
   async function linkEmail(event) {
     event.preventDefault();
@@ -73,7 +93,7 @@
       const result = await client.auth.updateUser({ email: email }, { emailRedirectTo: window.location.href });
       if (result.error) throw result.error;
       accountMessage("Check your inbox to verify and link this email to your guest stats.");
-    } catch (error) { accountMessage(error.message, true); }
+    } catch (error) { accountMessage(authErrorMessage(error), true); }
   }
   async function signInExistingEmail() {
     const email = $("raceAccountEmail").value.trim();
@@ -85,8 +105,8 @@
         options: { emailRedirectTo: window.location.href, shouldCreateUser: false }
       });
       if (result.error) throw result.error;
-      accountMessage("Sign-in link sent. Open it on this device to restore your stats.");
-    } catch (error) { accountMessage(error.message, true); }
+      accountMessage("Sign-in link sent. Open it to sign in to your saved account.");
+    } catch (error) { accountMessage(authErrorMessage(error), true); }
   }
   async function api(action, args) {
     await guest();
@@ -132,14 +152,41 @@
       addRow(scores, p.nickname, Number(p.score || 0).toLocaleString() + " pts", isOnline);
     });
   }
-  function renderLeaderboard(list, id) {
-    const root = $(id); root.replaceChildren();
+  function renderLeaderboard(list, id, chartId) {
+    const root = $(id);
+    root.replaceChildren();
+    const chart = chartId ? $(chartId) : null;
+    if (chart) chart.replaceChildren();
+
     if (!list || !list.length) {
       const li = document.createElement("li");
       li.className = "room-player";
       li.textContent = "No linked-account scores yet. Save your stats after joining an account.";
-      root.appendChild(li); return;
+      root.appendChild(li);
+      if (chart) {
+        const empty = document.createElement("p");
+        empty.className = "leaderboard-chart-empty";
+        empty.textContent = "The chart will appear when linked players have finished races.";
+        chart.appendChild(empty);
+      }
+      return;
     }
+
+    const maxWins = Math.max(1, ...list.map((entry) => Number(entry.races_won || 0)));
+    if (chart) list.slice(0, 10).forEach((entry, index) => {
+      const wins = Number(entry.races_won || 0);
+      const row = document.createElement("div"); row.className = "leaderboard-bar-row"; row.setAttribute("aria-label", entry.nickname + ": " + wins + " wins");
+      const label = document.createElement("span"); label.className = "leaderboard-bar-label";
+      label.textContent = (index + 1) + ". " + entry.nickname;
+      const track = document.createElement("span"); track.className = "leaderboard-bar-track";
+      const bar = document.createElement("span"); bar.className = "leaderboard-bar-fill";
+      bar.style.width = (wins ? Math.max(5, (wins / maxWins) * 100) : 0) + "%";
+      track.appendChild(bar);
+      const value = document.createElement("span"); value.className = "leaderboard-bar-value";
+      value.textContent = wins + " wins";
+      row.append(label, track, value); chart.appendChild(row);
+    });
+
     list.forEach((entry, index) => {
       const li = document.createElement("li"); li.className = "room-player";
       const name = document.createElement("strong");
@@ -211,7 +258,7 @@
       const podium = $("racePodium"); podium.replaceChildren();
       players.slice(0, 10).forEach((p, i) => addRow(podium, (i + 1) + ". " + p.nickname, Number(p.score || 0).toLocaleString() + " pts", false));
       renderReview(data.review, data.myAnswers);
-      renderLeaderboard(data.persistentLeaderboard, "racePersistentLeaderboard");
+      renderLeaderboard(data.persistentLeaderboard, "racePersistentLeaderboard", "racePersistentLeaderboardChart");
     }
   }
   function stopClock() { if (clock) clearInterval(clock); clock = null; }
@@ -286,7 +333,7 @@
     try {
       const result = await api("create", { nickname: nickname, category: $("raceCategory").value, questionCount: 5 });
       await enterRoom(result.room, nickname);
-    } catch (error) { notice(error.message, true); }
+    } catch (error) { notice(authErrorMessage(error), true); }
     finally { busyButton($("createRaceBtn"), false); }
   }
   async function joinRoom() {
@@ -296,7 +343,7 @@
     try {
       const result = await api("join", { nickname: nickname, roomCode: $("joinCodeInput").value });
       await enterRoom(result.room, nickname); await announce();
-    } catch (error) { notice(error.message, true); }
+    } catch (error) { notice(authErrorMessage(error), true); }
     finally { busyButton($("joinRaceBtn"), false); }
   }
   async function startRoom() {
@@ -304,7 +351,7 @@
     busyButton($("startRoomBtn"), true, "Starting…");
     try {
       await api("start", { roomId: roomId }); await announce(); await refresh();
-    } catch (error) { notice(error.message, true); }
+    } catch (error) { notice(authErrorMessage(error), true); }
     finally { busyButton($("startRoomBtn"), false); }
   }
   async function loadLeaderboard() {
@@ -313,7 +360,7 @@
     const li = document.createElement("li"); li.className = "room-player"; li.textContent = "Loading leaderboard…"; root.appendChild(li);
     try {
       const result = await api("leaderboard");
-      renderLeaderboard(result.leaderboard, "globalLeaderboard");
+      renderLeaderboard(result.leaderboard, "globalLeaderboard", "globalLeaderboardChart");
     } catch (error) {
       root.replaceChildren(); const failed = document.createElement("li"); failed.className = "room-player"; failed.textContent = error.message; root.appendChild(failed);
     }
@@ -338,6 +385,7 @@
   $("openRaceHubBtn").addEventListener("click", () => {
     panel("hub");
     $("raceNickname").value = $("raceNickname").value || localStorage.getItem("quiz_race_last_nickname") || localName();
+    guest().then(() => notice("You are ready to create or join a race.")).catch((error) => notice(authErrorMessage(error), true));
   });
   $("backToSoloBtn").addEventListener("click", () => panel("solo"));
   $("createRaceBtn").addEventListener("click", createRoom);
