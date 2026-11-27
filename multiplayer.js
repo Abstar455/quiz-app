@@ -265,7 +265,13 @@
         accept.addEventListener("click", async () => { try { await api("acceptFriendRequest", { requestId: request.id }); friendMessage("Friend request accepted."); await loadFriends(); } catch (e) { friendMessage(authErrorMessage(e), true); } });
         li.append(label, accept); requests.appendChild(li);
       });
-      $("friendRequestsEmpty").hidden = Boolean((data.incoming || []).length);
+      (data.outgoing || []).forEach((request) => {
+        const li = document.createElement("li"); li.className = "room-player";
+        const label = document.createElement("strong"); label.textContent = request.nickname;
+        const status = document.createElement("span"); status.textContent = "Awaiting response";
+        li.append(label, status); requests.appendChild(li);
+      });
+      $("friendRequestsEmpty").hidden = Boolean((data.incoming || []).length || (data.outgoing || []).length);
       const friends = $("accountFriendsList"); friends.replaceChildren();
       (data.friends || []).forEach((friend) => addRow(friends, friend.nickname, "Friend", false));
       $("accountFriendsEmpty").hidden = Boolean((data.friends || []).length);
