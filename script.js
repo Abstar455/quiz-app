@@ -992,6 +992,14 @@
 
   // Draw Meme Card on Canvas (No emojis)
   function drawMemeCard(name, errCount, totCount) {
+    const memeImage = document.getElementById("memeImage");
+    if (memeImage) {
+      memeImage.hidden = true;
+      memeImage.onload = () => { memeImage.hidden = false; memeCanvas.hidden = true; };
+      memeImage.onerror = () => { memeImage.hidden = true; memeCanvas.hidden = false; };
+      memeImage.src = "https://api.memegen.link/images/drake/guessing_confidently/reading_the_question.png?width=880";
+    }
+    memeCanvas.hidden = false;
     const c = memeCanvas.getContext("2d");
     if (!c) return;
     const w = memeCanvas.width;
@@ -1207,6 +1215,11 @@
     const tot = questions.length;
     const maxErr = getMaxMistakes(tot);
     const passed = mistakes <= maxErr;
+
+    if (window.QuizMultiplayer && typeof window.QuizMultiplayer.recordSoloResult === "function") {
+      window.QuizMultiplayer.recordSoloResult({ attemptId: crypto.randomUUID(), category: selectedCategory, correct: score, total: tot })
+        .catch(() => {});
+    }
 
     showOnly(resultScreen);
     renderAnswerReview();
@@ -1482,3 +1495,4 @@
     showOnly(onboardingScreen);
   }
 })();
+

@@ -1111,6 +1111,19 @@ body {
 .podium-name { max-width: 100%; overflow: hidden; font-size: 0.78rem; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
 .podium-score { color: var(--muted); font-size: 0.7rem; font-weight: 700; }
 
+.leaderboard-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 14px 0; padding: 5px; border: 1px solid #ddd8f2; border-radius: 13px; background: #f7f5ff; }
+.leaderboard-tab { min-height: 42px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font: inherit; font-weight: 800; cursor: pointer; }
+.leaderboard-tab.active { background: var(--purple); color: #fff; box-shadow: 0 3px 8px #5145ba35; }
+.friend-code-card { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 5px 12px; margin: 12px 0; padding: 13px; border: 1px solid #ddd8f2; border-radius: 12px; background: #f7f5ff; }
+.friend-code-card span { color: var(--muted); font-size: .75rem; font-weight: 700; }
+.friend-code-card strong { color: var(--purple-dark); font-size: 1.15rem; letter-spacing: .16em; }
+.friend-code-card button { grid-column: 2; grid-row: 1 / span 2; }
+.friends-list-group { margin-top: 16px; }
+.friends-list-group h4 { margin: 0 0 8px; }
+.friends-list-group .room-player { align-items: center; }
+.meme-image { display: block; width: 100%; max-height: 340px; margin: 0 auto 14px; object-fit: contain; border: 5px solid #121212; border-radius: 14px; background: #121212; }
+.meme-image[hidden] { display: none; }
+
 @media (max-width: 520px) {
   body { padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); }
   .app-shell {
@@ -1138,6 +1151,8 @@ body {
   .leaderboard-bar-row { grid-template-columns: 30px minmax(0, 1fr) auto; gap: 8px; padding: 8px; }
   .leaderboard-rank { width: 28px; height: 28px; }
   .leaderboard-bar-value { min-width: 48px; }
+  .friend-code-card { padding: 11px; }
+  .friend-code-card strong { font-size: 1rem; }
 }
 @media (max-width: 360px) {
   .card { padding: 15px; }
@@ -1148,3 +1163,4 @@ body {
   .leaderboard-bar-row { grid-template-columns: 28px minmax(0, 1fr); }
   .leaderboard-bar-value { grid-column: 2; text-align: left; }
 }
+

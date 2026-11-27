@@ -6,7 +6,7 @@ A static quiz app with optional room-code races. Solo play stays open; multiplay
 
 GitHub Pages serves the website files. Supabase Free supplies anonymous guest sessions, the database, the race API, and realtime room updates. GitHub Pages cannot run server code, so Supabase is the app's small free backend. There is no paid AI API in the game.
 
-The current race mode supports up to 20 players in a room, five questions per race, 15 seconds per question, room codes, live scores, answer review, and an all-time leaderboard for linked accounts. The private server-side seed contains 144 distinct questions: 26 programming, 29 geography, 60 mathematics, and 29 entertainment.
+The current race mode supports up to 20 players in a room, five questions per race, 15 seconds per question, room codes, live scores, and answer review. Leaderboards include an overall board and a separate board for accepted friends. Players can share an eight-character friend code from Account; a friend request must be accepted before that player appears in the friends board. Leaderboards show nicknames and aggregate quiz results, never emails or account IDs. Guest identities are per browser; link an account in Account to carry stats and friends across devices. The private server-side seed contains 144 distinct questions: 26 programming, 29 geography, 60 mathematics, and 29 entertainment.
 
 ## Publish the website
 
@@ -48,7 +48,7 @@ Guests do not have to sign up. Their anonymous identity is stored in that browse
 
 Supabase Free currently lists a 500 MB database, up to 200 concurrent realtime connections, and 2 million realtime messages monthly. Free projects can pause after a period of low activity, so the races will be temporarily unavailable until the project is resumed. Quotas and plan terms can change; this setup has no paid backend budget guarantee.
 
-This is a first multiplayer version for casual races, not a tournament-grade anti-cheat system. Keep the question bank small enough for the free database and avoid storing sensitive personal information. The all-time leaderboard is public to app users and only includes linked accounts.
+This is a first multiplayer version for casual races, not a tournament-grade anti-cheat system. Keep the question bank small enough for the free database and avoid storing sensitive personal information. The result meme uses a generic captioned template from Memegen.link; if the image service is unavailable, the app draws its built-in fallback card.
 
 Never commit database passwords, private question files, or service-role/secret keys.
 

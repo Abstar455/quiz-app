@@ -52,6 +52,96 @@ async function recordFinishedRoom(roomId: string) {
   return data;
 }
 
+function makeFriendCode() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = crypto.getRandomValues(new Uint8Array(8));
+  return Array.from(bytes, (byte) => chars[byte % chars.length]).join("");
+}
+
+async function ensurePlayerProfile(userId: string, nicknameValue: unknown) {
+  const nickname = cleanNickname(nicknameValue) || "Player";
+  const { data: existing, error: lookupError } = await admin.from("player_profiles")
+    .select("user_id,nickname,friend_code").eq("user_id", userId).maybeSingle();
+  if (lookupError) throw lookupError;
+  if (existing) {
+    if (existing.nickname !== nickname) {
+      const { data, error } = await admin.from("player_profiles").update({ nickname, updated_at: new Date().toISOString() })
+        .eq("user_id", userId).select("user_id,nickname,friend_code").single();
+      if (error) throw error;
+      return data;
+    }
+    return existing;
+  }
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const { data, error } = await admin.from("player_profiles")
+      .insert({ user_id: userId, nickname, friend_code: makeFriendCode() })
+      .select("user_id,nickname,friend_code").single();
+    if (!error) return data;
+    if (error.code !== "23505") throw error;
+  }
+  throw new Error("Could not create a friend code. Please try again.");
+}
+
+async function collectLeaderboard(ids?: string[]) {
+  let statsQuery = admin.from("player_stats").select("user_id,nickname,races_played,races_won,correct_answers");
+  let soloQuery = admin.from("solo_quiz_results").select("user_id,nickname,correct_count,question_count");
+  if (ids) {
+    if (!ids.length) return [];
+    statsQuery = statsQuery.in("user_id", ids);
+    soloQuery = soloQuery.in("user_id", ids);
+  }
+  const [{ data: raceStats, error: raceError }, { data: soloRows, error: soloError }] = await Promise.all([statsQuery, soloQuery]);
+  if (raceError) throw raceError;
+  if (soloError) throw soloError;
+  const rows = new Map<string, { nickname: string; quizzes: number; correct: number; questions: number; wins: number }>();
+  for (const item of raceStats ?? []) {
+    rows.set(item.user_id, {
+      nickname: cleanNickname(item.nickname) || "Player",
+      quizzes: Number(item.races_played || 0),
+      correct: Number(item.correct_answers || 0),
+      questions: Number(item.races_played || 0) * 5,
+      wins: Number(item.races_won || 0),
+    });
+  }
+  for (const item of soloRows ?? []) {
+    const row = rows.get(item.user_id) ?? { nickname: cleanNickname(item.nickname) || "Player", quizzes: 0, correct: 0, questions: 0, wins: 0 };
+    row.nickname = cleanNickname(item.nickname) || row.nickname;
+    row.quizzes++;
+    row.correct += Number(item.correct_count || 0);
+    row.questions += Number(item.question_count || 0);
+    rows.set(item.user_id, row);
+  }
+  return [...rows.values()].filter((row) => row.quizzes > 0)
+    .map((row) => ({ nickname: row.nickname, quizzes: row.quizzes, correct: row.correct, questions: row.questions,
+      accuracy: row.questions ? Math.round(row.correct / row.questions * 100) : 0, wins: row.wins }))
+    .sort((a, b) => b.accuracy - a.accuracy || b.correct - a.correct || b.quizzes - a.quizzes)
+    .slice(0, 50);
+}
+
+async function getFriendData(userId: string) {
+  const [{ data: incoming, error: incomingError }, { data: outgoing, error: outgoingError }, { data: accepted, error: acceptedError }] = await Promise.all([
+    admin.from("friend_requests").select("id,sender_id,created_at").eq("recipient_id", userId).eq("status", "pending"),
+    admin.from("friend_requests").select("id,recipient_id,created_at").eq("sender_id", userId).eq("status", "pending"),
+    admin.from("friend_requests").select("sender_id,recipient_id").eq("status", "accepted").or(`sender_id.eq.${userId},recipient_id.eq.${userId}`),
+  ]);
+  if (incomingError) throw incomingError;
+  if (outgoingError) throw outgoingError;
+  if (acceptedError) throw acceptedError;
+  const friendIds = [...new Set((accepted ?? []).map((r) => r.sender_id === userId ? r.recipient_id : r.sender_id))];
+  const profileIds = [...new Set([...(incoming ?? []).map((r) => r.sender_id), ...(outgoing ?? []).map((r) => r.recipient_id), ...friendIds])];
+  const { data: profiles, error: profilesError } = profileIds.length
+    ? await admin.from("player_profiles").select("user_id,nickname").in("user_id", profileIds)
+    : { data: [], error: null };
+  if (profilesError) throw profilesError;
+  const names = new Map((profiles ?? []).map((p) => [p.user_id, p.nickname]));
+  return {
+    incoming: (incoming ?? []).map((r) => ({ id: r.id, nickname: names.get(r.sender_id) || "Player" })),
+    outgoing: (outgoing ?? []).map((r) => ({ nickname: names.get(r.recipient_id) || "Player" })),
+    friends: friendIds.map((id) => ({ nickname: names.get(id) || "Player" })),
+    friendIds,
+  };
+}
+
 async function getRoomState(roomId: string, userId: string) {
   await requireRoomMember(roomId, userId);
 
@@ -110,6 +200,66 @@ async function getRoomState(roomId: string, userId: string) {
 
 async function handleAction(user: { id: string; is_anonymous?: boolean }, body: Record<string, unknown>) {
   const action = body.action;
+
+  if (action === "profile") {
+    const profile = await ensurePlayerProfile(user.id, body.nickname);
+    return { friendCode: profile.friend_code };
+  }
+
+  if (action === "friendData") {
+    const profile = await ensurePlayerProfile(user.id, body.nickname);
+    const friends = await getFriendData(user.id);
+    return { friendCode: profile.friend_code, incoming: friends.incoming, outgoing: friends.outgoing, friends: friends.friends };
+  }
+
+  if (action === "sendFriendRequest") {
+    await ensurePlayerProfile(user.id, body.nickname);
+    const code = String(body.friendCode ?? "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (!/^[A-Z2-9]{8}$/.test(code)) throw new Error("Enter an eight-character friend code.");
+    const { data: target, error: targetError } = await admin.from("player_profiles").select("user_id,nickname").eq("friend_code", code).maybeSingle();
+    if (targetError) throw targetError;
+    if (!target) throw new Error("We couldn’t find that friend code.");
+    if (target.user_id === user.id) throw new Error("That’s your own friend code.");
+    const { data: reverse, error: reverseError } = await admin.from("friend_requests").select("id,status").eq("sender_id", target.user_id).eq("recipient_id", user.id).maybeSingle();
+    if (reverseError) throw reverseError;
+    if (reverse?.status === "accepted") throw new Error("You’re already friends.");
+    if (reverse?.status === "pending") throw new Error("This player already sent you a request. Accept it in your Friends section.");
+    const { error } = await admin.from("friend_requests").insert({ sender_id: user.id, recipient_id: target.user_id });
+    if (error?.code === "23505") throw new Error("A friend request is already pending.");
+    if (error) throw error;
+    return { sent: true, nickname: target.nickname };
+  }
+
+  if (action === "acceptFriendRequest") {
+    const requestId = String(body.requestId ?? "");
+    const { data, error } = await admin.from("friend_requests").update({ status: "accepted", accepted_at: new Date().toISOString() })
+      .eq("id", requestId).eq("recipient_id", user.id).eq("status", "pending").select("id").maybeSingle();
+    if (error) throw error;
+    if (!data) throw new Error("That friend request is no longer available.");
+    return { accepted: true };
+  }
+
+  if (action === "leaderboard") {
+    await ensurePlayerProfile(user.id, body.nickname);
+    const mode = body.mode === "friends" ? "friends" : "overall";
+    if (mode === "overall") return { mode, players: await collectLeaderboard() };
+    const friendship = await getFriendData(user.id);
+    return { mode, players: await collectLeaderboard([user.id, ...friendship.friendIds]), friendCount: friendship.friendIds.length };
+  }
+
+  if (action === "recordSolo") {
+    const nickname = cleanNickname(body.nickname);
+    const attemptId = String(body.attemptId ?? "");
+    const category = String(body.category ?? "");
+    const correct = Number(body.correct);
+    const total = Number(body.total);
+    if (!nickname || !/^[0-9a-f-]{36}$/i.test(attemptId)) throw new Error("The quiz result could not be saved.");
+    if (!allowedCategories.has(category) || !Number.isInteger(correct) || !Number.isInteger(total) || total < 1 || total > 100 || correct < 0 || correct > total) throw new Error("Invalid quiz result.");
+    await ensurePlayerProfile(user.id, nickname);
+    const { error } = await admin.from("solo_quiz_results").upsert({ attempt_id: attemptId, user_id: user.id, nickname, category, correct_count: correct, question_count: total }, { onConflict: "attempt_id", ignoreDuplicates: true });
+    if (error) throw error;
+    return { saved: true };
+  }
 
   if (action === "create") {
     const nickname = cleanNickname(body.nickname);
@@ -295,3 +445,4 @@ Deno.serve(async (request) => {
     return response(400, { error: message });
   }
 });
+

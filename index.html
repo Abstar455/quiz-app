@@ -153,6 +153,20 @@
         <p id="raceAccountMessage" class="account-feedback" role="status" aria-live="polite"></p>
       </section>
 
+      <section class="account-auth-panel friends-panel" aria-labelledby="friendsHeading">
+        <div class="eyebrow">PLAY TOGETHER</div>
+        <h3 id="friendsHeading">Friends</h3>
+        <p class="account-status-copy">Share your friend code, or enter someone else’s code to send a request.</p>
+        <div class="friend-code-card"><span>Your friend code</span><strong id="myFriendCode">--------</strong><button type="button" class="secondary-btn compact-btn" id="copyFriendCodeBtn">Copy</button></div>
+        <form id="addFriendForm" class="form-stack">
+          <div class="field"><label for="friendCodeInput">Friend’s code</label><input id="friendCodeInput" maxlength="8" autocomplete="off" autocapitalize="characters" placeholder="8-character code" /></div>
+          <button type="submit" class="primary-btn full-btn" id="sendFriendRequestBtn">Add friend</button>
+        </form>
+        <p class="account-feedback" id="friendsMessage" role="status" aria-live="polite"></p>
+        <div class="friends-list-group"><h4>Requests</h4><ul id="friendRequestsList" class="room-player-list"></ul><p id="friendRequestsEmpty" class="field-hint">No pending friend requests.</p></div>
+        <div class="friends-list-group"><h4>Your friends</h4><ul id="accountFriendsList" class="room-player-list"></ul><p id="accountFriendsEmpty" class="field-hint">Add a friend to build your private leaderboard.</p></div>
+      </section>
+
       <div class="btn-row account-actions">
         <button type="button" class="secondary-btn" id="reEditProfileBtn">Edit Profile</button>
         <button type="button" class="primary-btn" id="backToQuizFromAccBtn">Back to Quiz</button>
@@ -262,7 +276,7 @@
           <input id="joinCodeInput" type="text" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="ROOM CODE" aria-label="Room code" />
           <button type="button" class="secondary-btn" id="joinRaceBtn">Join</button>
         </div>
-        <button type="button" class="secondary-btn full-btn" id="openLeaderboardBtn">Friends leaderboard</button>
+        <button type="button" class="secondary-btn full-btn" id="openLeaderboardBtn">Leaderboards</button>
       </section>
 
       <section class="race-panel room-panel" id="raceRoomPanel" hidden aria-live="polite">
@@ -309,17 +323,22 @@
 
       <section class="race-panel leaderboard-panel" id="raceLeaderboardPanel" hidden>
         <button type="button" class="back-link" id="backFromLeaderboardBtn">← Back to races</button>
-        <div class="eyebrow">YOUR FRIEND GROUP</div>
-        <h3>Friends leaderboard</h3>
-        <p class="screen-subtext">Each leaderboard is limited to people who join the same room with your code. There is no public all-player ranking.</p>
-        <div id="friendsLeaderboardEmpty" class="leaderboard-empty-state">
+        <div class="eyebrow">QUIZ STANDINGS</div>
+        <h3>Leaderboards</h3>
+        <p class="screen-subtext">Compare quiz results across everyone, or keep it to you and the friends you add.</p>
+        <div class="leaderboard-tabs" role="tablist" aria-label="Leaderboard type">
+          <button type="button" class="leaderboard-tab active" id="overallBoardTab" role="tab" aria-selected="true">Overall</button>
+          <button type="button" class="leaderboard-tab" id="friendsBoardTab" role="tab" aria-selected="false">Friends</button>
+        </div>
+        <div id="leaderboardStatus" class="backend-notice" role="status" aria-live="polite"></div>
+        <div id="friendsLeaderboardEmpty" class="leaderboard-empty-state" hidden>
           <span class="leaderboard-empty-icon" aria-hidden="true">🏁</span>
-          <strong>No finished race yet</strong>
-          <p>Finish a race with friends to see its room-only chart and final standings here.</p>
+          <strong id="leaderboardEmptyTitle">No quiz results yet</strong>
+          <p id="leaderboardEmptyCopy">Complete a quiz to appear on the board.</p>
         </div>
         <div id="friendsLeaderboardResults" hidden>
           <p id="friendsLeaderboardCaption" class="race-chart-caption"></p>
-          <div id="friendsLeaderboardChart" class="leaderboard-chart" role="region" aria-label="Latest friends race points by player" aria-live="polite"></div>
+          <div id="friendsLeaderboardChart" class="leaderboard-chart" role="region" aria-label="Quiz results by player" aria-live="polite"></div>
           <ol id="friendsLeaderboardList" class="room-player-list score-list"></ol>
         </div>
       </section>
@@ -364,6 +383,7 @@
       </div>
 
       <div id="punishmentView" style="display: none;" aria-live="polite">
+        <img id="memeImage" class="meme-image" alt="A classic meme template captioned for this quiz result" hidden />
         <canvas id="memeCanvas" width="440" height="240" class="meme-canvas"></canvas>
         <h2 class="result-title impact-text" id="punishmentTitle"></h2>
         <p class="result-message" id="punishmentJoke"></p>
@@ -391,3 +411,4 @@
   <script src="multiplayer.js"></script>
 </body>
 </html>
+

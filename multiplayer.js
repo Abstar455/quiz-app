@@ -219,6 +219,58 @@
       row.append(name, score); root.appendChild(row);
     });
   }
+  function renderGlobalChart(players) {
+    const chart = $("friendsLeaderboardChart"); chart.replaceChildren();
+    const ranked = players || [];
+    if (!ranked.length) return;
+    const header = document.createElement("div"); header.className = "leaderboard-chart-header";
+    const title = document.createElement("strong"); title.textContent = ranked.length + (ranked.length === 1 ? " player" : " players");
+    const meta = document.createElement("span"); meta.textContent = "Ranked by quiz accuracy";
+    header.append(title, meta); chart.appendChild(header);
+    ranked.forEach((player, index) => {
+      const row = document.createElement("div"); row.className = "leaderboard-bar-row rank-" + (index + 1);
+      const rank = document.createElement("span"); rank.className = "leaderboard-rank"; rank.textContent = "#" + (index + 1);
+      const cell = document.createElement("div"); cell.className = "leaderboard-player-cell";
+      const label = document.createElement("span"); label.className = "leaderboard-bar-label"; label.textContent = player.nickname;
+      const track = document.createElement("span"); track.className = "leaderboard-bar-track";
+      const bar = document.createElement("span"); bar.className = "leaderboard-bar-fill"; bar.style.width = Math.max(3, Number(player.accuracy || 0)) + "%";
+      track.appendChild(bar); cell.append(label, track);
+      const value = document.createElement("span"); value.className = "leaderboard-bar-value"; value.textContent = Number(player.accuracy || 0) + "%";
+      row.setAttribute("aria-label", `${index + 1}. ${player.nickname}: ${player.accuracy}% accuracy across ${player.quizzes} quizzes`);
+      row.append(rank, cell, value); chart.appendChild(row);
+    });
+  }
+  function renderGlobalList(players) {
+    const root = $("friendsLeaderboardList"); root.replaceChildren();
+    (players || []).forEach((player, index) => {
+      const row = document.createElement("li"); row.className = "room-player";
+      const name = document.createElement("strong"); name.textContent = `${index + 1}. ${player.nickname}`;
+      const detail = document.createElement("span"); detail.textContent = `${player.correct}/${player.questions} correct · ${player.quizzes} quizzes`;
+      row.append(name, detail); root.appendChild(row);
+    });
+  }
+  function friendMessage(message, error) {
+    const target = $("friendsMessage"); target.textContent = message || ""; target.classList.toggle("is-error", Boolean(error));
+  }
+  async function loadFriends() {
+    if (!ready) { friendMessage("Friends need the free backend connection.", true); return; }
+    try {
+      const data = await api("friendData", { nickname: localName() });
+      $("myFriendCode").textContent = data.friendCode || "--------";
+      const requests = $("friendRequestsList"); requests.replaceChildren();
+      (data.incoming || []).forEach((request) => {
+        const li = document.createElement("li"); li.className = "room-player";
+        const label = document.createElement("strong"); label.textContent = request.nickname;
+        const accept = document.createElement("button"); accept.type = "button"; accept.className = "secondary-btn compact-btn"; accept.textContent = "Accept";
+        accept.addEventListener("click", async () => { try { await api("acceptFriendRequest", { requestId: request.id }); friendMessage("Friend request accepted."); await loadFriends(); } catch (e) { friendMessage(authErrorMessage(e), true); } });
+        li.append(label, accept); requests.appendChild(li);
+      });
+      $("friendRequestsEmpty").hidden = Boolean((data.incoming || []).length);
+      const friends = $("accountFriendsList"); friends.replaceChildren();
+      (data.friends || []).forEach((friend) => addRow(friends, friend.nickname, "Friend", false));
+      $("accountFriendsEmpty").hidden = Boolean((data.friends || []).length);
+    } catch (error) { friendMessage(authErrorMessage(error), true); }
+  }
   function renderPodium(players) {
     const podium = $("racePodium"); podium.replaceChildren();
     (players || []).slice().sort((a, b) => Number(b.score || 0) - Number(a.score || 0)).slice(0, 3).forEach((player, index) => {
@@ -397,19 +449,32 @@
     } catch (error) { notice(authErrorMessage(error), true); }
     finally { busyButton($("startRoomBtn"), false); }
   }
-  async function loadLeaderboard() {
+  async function loadLeaderboard(mode) {
     panel("leaderboard");
-    let latest = null;
-    try { latest = JSON.parse(sessionStorage.getItem(lastRaceKey) || "null"); } catch (_) {}
-    const players = latest && Array.isArray(latest.players) ? latest.players : [];
-    const hasResults = players.length > 0;
-    $("friendsLeaderboardEmpty").hidden = hasResults;
-    $("friendsLeaderboardResults").hidden = !hasResults;
-    if (!hasResults) return;
-    const room = latest.roomCode ? "Room " + latest.roomCode : "Latest room";
-    $("friendsLeaderboardCaption").textContent = [latest.category, room, "room-only scores"].filter(Boolean).join(" · ");
-    renderFriendsChart(players, "friendsLeaderboardChart");
-    renderScoreList(players, "friendsLeaderboardList");
+    const selected = mode || "overall";
+    $("overallBoardTab").classList.toggle("active", selected === "overall");
+    $("friendsBoardTab").classList.toggle("active", selected === "friends");
+    $("overallBoardTab").setAttribute("aria-selected", String(selected === "overall"));
+    $("friendsBoardTab").setAttribute("aria-selected", String(selected === "friends"));
+    $("leaderboardStatus").textContent = "Loading standings…";
+    $("friendsLeaderboardEmpty").hidden = true;
+    $("friendsLeaderboardResults").hidden = true;
+    try {
+      const data = await api("leaderboard", { mode: selected, nickname: localName() });
+      const players = data.players || [];
+      $("leaderboardStatus").textContent = "";
+      const hasResults = players.length > 0;
+      $("friendsLeaderboardEmpty").hidden = hasResults;
+      $("friendsLeaderboardResults").hidden = !hasResults;
+      $("leaderboardEmptyTitle").textContent = selected === "friends" && !data.friendCount ? "Add friends to start your board" : "No quiz results yet";
+      $("leaderboardEmptyCopy").textContent = selected === "friends" && !data.friendCount ? "Use the Friends section in Account to share codes and accept requests." : "Complete a solo quiz or race to appear on the board.";
+      if (!hasResults) return;
+      $("friendsLeaderboardCaption").textContent = selected === "friends" ? "You and your accepted friends · lifetime quiz accuracy" : "Everyone who has completed a quiz · lifetime accuracy";
+      renderGlobalChart(players); renderGlobalList(players);
+    } catch (error) { $("leaderboardStatus").textContent = authErrorMessage(error); }
+  }
+  async function recordSoloResult(result) {
+    return await api("recordSolo", Object.assign({ nickname: localName() }, result));
   }
   async function reset(callLeave) {
     stopClock();
@@ -440,8 +505,29 @@
   $("copyRoomCodeBtn").addEventListener("click", copyCode);
   $("leaveRoomBtn").addEventListener("click", async () => { await reset(true); panel("hub"); });
   $("newRaceBtn").addEventListener("click", async () => { await reset(true); panel("hub"); });
-  $("openLeaderboardBtn").addEventListener("click", loadLeaderboard);
+  $("openLeaderboardBtn").addEventListener("click", () => loadLeaderboard("overall"));
+  $("overallBoardTab").addEventListener("click", () => loadLeaderboard("overall"));
+  $("friendsBoardTab").addEventListener("click", () => loadLeaderboard("friends"));
   $("backFromLeaderboardBtn").addEventListener("click", () => panel("hub"));
+  $("navAccountBtn").addEventListener("click", () => { loadFriends(); });
+  $("addFriendForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const code = $("friendCodeInput").value.trim().toUpperCase();
+    if (!code) return friendMessage("Enter your friend’s code first.", true);
+    try {
+      const result = await api("sendFriendRequest", { friendCode: code, nickname: localName() });
+      $("friendCodeInput").value = "";
+      friendMessage(`Request sent to ${result.nickname}.`);
+      await loadFriends();
+    } catch (error) { friendMessage(authErrorMessage(error), true); }
+  });
+  $("friendCodeInput").addEventListener("input", () => { $("friendCodeInput").value = $("friendCodeInput").value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8); });
+  $("copyFriendCodeBtn").addEventListener("click", async () => {
+    const code = $("myFriendCode").textContent;
+    if (!/^[A-Z0-9]{8}$/.test(code)) return friendMessage("Open Account while online to create your friend code.", true);
+    try { await navigator.clipboard.writeText(code); friendMessage("Friend code copied."); }
+    catch (_) { friendMessage("Your friend code is " + code); }
+  });
   $("toggleRaceReviewBtn").addEventListener("click", (event) => {
     const list = $("raceReviewList"); list.hidden = !list.hidden;
     event.currentTarget.setAttribute("aria-expanded", String(!list.hidden));
@@ -469,6 +555,8 @@
     updateAccountStatus(null);
   }
 
+  window.QuizMultiplayer = { recordSoloResult };
+
   const savedRoom = sessionStorage.getItem(roomKey);
   if (savedRoom && ready) {
     roomId = savedRoom;
@@ -480,3 +568,4 @@
     }).catch(() => { sessionStorage.removeItem(roomKey); sessionStorage.removeItem(nickKey); });
   }
 })();
+
