@@ -1111,15 +1111,28 @@ body {
 .podium-score { color: var(--muted); font-size: 0.7rem; font-weight: 700; }
 
 @media (max-width: 520px) {
-  body { padding: 10px 10px calc(124px + env(safe-area-inset-bottom)); }
-  .app-shell { width: 100%; max-width: 100%; }
+  body { padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); }
+  .app-shell {
+    width: 100%;
+    max-width: 100%;
+    min-height: calc(100dvh - 20px - env(safe-area-inset-bottom));
+    padding-bottom: 0;
+  }
+  .app-shell > section { order: 2; }
+  .app-header { order: 1; }
+  .bottom-nav {
+    position: static;
+    order: 3;
+    width: 100%;
+    margin-top: auto;
+    transform: none;
+  }
   .card { padding: clamp(16px, 4.8vw, 20px); }
   .two-col { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .btn-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 9px; }
   .btn-row > button { width: 100%; min-height: 48px; }
   .quiz-footer { align-items: center; }
   .quiz-footer .next-btn { flex: 0 0 auto; min-width: 96px; }
-  .bottom-nav { bottom: max(10px, env(safe-area-inset-bottom)); }
   .field input, .field select { font-size: 16px; }
   .leaderboard-bar-row { grid-template-columns: 30px minmax(0, 1fr) auto; gap: 8px; padding: 8px; }
   .leaderboard-rank { width: 28px; height: 28px; }
