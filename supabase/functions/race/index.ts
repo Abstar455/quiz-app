@@ -78,6 +78,17 @@ async function ensurePlayerProfile(userId: string, nicknameValue: unknown) {
       .select("user_id,nickname,friend_code").single();
     if (!error) return data;
     if (error.code !== "23505") throw error;
+    const { data: concurrent, error: concurrentError } = await admin.from("player_profiles")
+      .select("user_id,nickname,friend_code").eq("user_id", userId).maybeSingle();
+    if (concurrentError) throw concurrentError;
+    if (concurrent) {
+      if (concurrent.nickname === nickname) return concurrent;
+      const { data: updated, error: updateError } = await admin.from("player_profiles")
+        .update({ nickname, updated_at: new Date().toISOString() }).eq("user_id", userId)
+        .select("user_id,nickname,friend_code").single();
+      if (updateError) throw updateError;
+      return updated;
+    }
   }
   throw new Error("Could not create a friend code. Please try again.");
 }
