@@ -944,6 +944,7 @@ body { padding-bottom: calc(104px + env(safe-area-inset-bottom)); }
   .room-code-card { flex-wrap: wrap; }
   .room-code-card span { width: 100%; }
   .join-room-row { grid-template-columns: minmax(0, 1fr) 72px; }
+  .join-room-row button { min-width: 72px; }
 }
 
 /* Keep the question-to-question CTA visually inside its footer. */
